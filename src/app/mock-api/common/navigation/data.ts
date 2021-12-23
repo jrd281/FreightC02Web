@@ -90,13 +90,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon    : 'heroicons_outline:document',
         children: [
             {
-                id   : 'pages.activities',
-                title: 'Activities',
-                type : 'basic',
-                icon : 'heroicons_outline:menu-alt-2',
-                link : '/pages/activities'
-            },
-            {
                 id      : 'pages.authentication',
                 title   : 'Authentication',
                 type    : 'collapsable',
@@ -454,57 +447,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 ]
             },
             {
-                id      : 'pages.coming-soon',
-                title   : 'Coming Soon',
-                type    : 'collapsable',
-                icon    : 'heroicons_outline:clock',
-                link    : '/pages/coming-soon',
-                children: [
-                    {
-                        id   : 'pages.coming-soon.classic',
-                        title: 'Classic',
-                        type : 'basic',
-                        link : '/pages/coming-soon/classic'
-                    },
-                    {
-                        id   : 'pages.coming-soon.modern',
-                        title: 'Modern',
-                        type : 'basic',
-                        link : '/pages/coming-soon/modern'
-                    },
-                    {
-                        id   : 'pages.coming-soon.modern-reversed',
-                        title: 'Modern Reversed',
-                        type : 'basic',
-                        link : '/pages/coming-soon/modern-reversed'
-                    },
-                    {
-                        id   : 'pages.coming-soon.split-screen',
-                        title: 'Split Screen',
-                        type : 'basic',
-                        link : '/pages/coming-soon/split-screen'
-                    },
-                    {
-                        id   : 'pages.coming-soon.split-screen-reversed',
-                        title: 'Split Screen Reversed',
-                        type : 'basic',
-                        link : '/pages/coming-soon/split-screen-reversed'
-                    },
-                    {
-                        id   : 'pages.coming-soon.fullscreen',
-                        title: 'Fullscreen',
-                        type : 'basic',
-                        link : '/pages/coming-soon/fullscreen'
-                    },
-                    {
-                        id   : 'pages.coming-soon.fullscreen-reversed',
-                        title: 'Fullscreen Reversed',
-                        type : 'basic',
-                        link : '/pages/coming-soon/fullscreen-reversed'
-                    }
-                ]
-            },
-            {
                 id      : 'pages.error',
                 title   : 'Error',
                 type    : 'collapsable',
@@ -525,70 +467,11 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 ]
             },
             {
-                id      : 'pages.invoice',
-                title   : 'Invoice',
-                type    : 'collapsable',
-                icon    : 'heroicons_outline:calculator',
-                children: [
-                    {
-                        id      : 'pages.invoice.printable',
-                        title   : 'Printable',
-                        type    : 'collapsable',
-                        children: [
-                            {
-                                id   : 'pages.invoice.printable.compact',
-                                title: 'Compact',
-                                type : 'basic',
-                                link : '/pages/invoice/printable/compact'
-                            },
-                            {
-                                id   : 'pages.invoice.printable.modern',
-                                title: 'Modern',
-                                type : 'basic',
-                                link : '/pages/invoice/printable/modern'
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
                 id   : 'pages.maintenance',
                 title: 'Maintenance',
                 type : 'basic',
                 icon : 'heroicons_outline:exclamation',
                 link : '/pages/maintenance'
-            },
-            {
-                id      : 'pages.pricing',
-                title   : 'Pricing',
-                type    : 'collapsable',
-                icon    : 'heroicons_outline:cash',
-                children: [
-                    {
-                        id   : 'pages.pricing.modern',
-                        title: 'Modern',
-                        type : 'basic',
-                        link : '/pages/pricing/modern'
-                    },
-                    {
-                        id   : 'pages.pricing.simple',
-                        title: 'Simple',
-                        type : 'basic',
-                        link : '/pages/pricing/simple'
-                    },
-                    {
-                        id   : 'pages.pricing.single',
-                        title: 'Single',
-                        type : 'basic',
-                        link : '/pages/pricing/single'
-                    },
-                    {
-                        id   : 'pages.pricing.table',
-                        title: 'Table',
-                        type : 'basic',
-                        link : '/pages/pricing/table'
-                    }
-                ]
             },
             {
                 id   : 'pages.profile',

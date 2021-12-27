@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import {catchError, from, Observable, of, switchMap, throwError} from 'rxjs';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
+import {LoginSuccess} from './store/actions';
+import Auth from '@aws-amplify/auth';
+import {AuthAppState} from './store/reducers';
+import {Store} from '@ngrx/store';
 
 @Injectable()
 export class AuthService
@@ -14,7 +18,8 @@ export class AuthService
      */
     constructor(
         private _httpClient: HttpClient,
-        private _userService: UserService
+        private _userService: UserService,
+        private _store: Store<AuthAppState>
     )
     {
     }
@@ -182,5 +187,23 @@ export class AuthService
 
         // If the access token exists and it didn't expire, sign in using it
         return this.signInUsingToken();
+    }
+
+    /**
+     * checkCognitoAuth
+     */
+    checkCognitoAuth(): Observable<any>
+    {
+        return from(Auth.currentAuthenticatedUser()
+            .then((user) => {
+                const jwtToken = user.signInUserSession.idToken.jwtToken;
+                const loginSuccessObject = Object.assign({}, user.attributes);
+                loginSuccessObject['accessToken'] = jwtToken;
+                this._store.dispatch(new LoginSuccess(loginSuccessObject));
+            })
+            .catch((err) => {
+                console.error(err);
+                return Auth.federatedSignIn();
+            }));
     }
 }

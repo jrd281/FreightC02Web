@@ -1,0 +1,12 @@
+aws cognito-idp admin-create-user --user-pool-id us-east-2_v8L3UUF6V --username justindallas+app_user@gmail.com --message-action SUPPRESS --user-attributes Name=given_name,Value=Justin Name=family_name,Value=Dallas Name=custom:tenant_id,Value=dev Name=profile,Value=APP_USER
+aws cognito-idp admin-create-user --user-pool-id us-east-2_v8L3UUF6V --username justindallas+power_user@gmail.com --message-action SUPPRESS --user-attributes Name=given_name,Value=Justin Name=family_name,Value=Dallas Name=custom:tenant_id,Value=dev Name=profile,Value=POWER_USER
+aws cognito-idp admin-create-user --user-pool-id us-east-2_v8L3UUF6V --username justindallas+admin_user@gmail.com --message-action SUPPRESS --user-attributes Name=given_name,Value=Justin Name=family_name,Value=Dallas Name=custom:tenant_id,Value=dev Name=profile,Value=ADMIN_USER
+
+aws cognito-idp admin-set-user-password --user-pool-id us-east-2_v8L3UUF6V --username 7af0e359-0451-4e75-98f2-60dad32581ee --password justindallas+app_user@gmail.com --permanent
+aws cognito-idp admin-set-user-password --user-pool-id us-east-2_v8L3UUF6V --username 5cbc3c8a-10d8-45af-8317-02054070072e --password justindallas+power_user@gmail.com --permanent
+aws cognito-idp admin-set-user-password --user-pool-id us-east-2_v8L3UUF6V --username 39bb988e-1be4-45fa-8b56-8f0188e96431 --password justindallas+admin_user@gmail.com --permanent
+
+aws cognito-idp admin-get-user --user-pool-id us-east-2_v8L3UUF6V --username justindallas@gmail.com
+
+aws cognito-idp admin-delete-user --user-pool-id us-east-2_v8L3UUF6V --username justindallas@gmail.com
+aws cognito-idp admin-update-user-attributes --user-pool-id us-east-2_v8L3UUF6V --username justindallas+test@gmail.com --user-attributes Name=profile,Value=APP_USER

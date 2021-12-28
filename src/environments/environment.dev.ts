@@ -1,5 +1,5 @@
 export const environment = {
-    stage: 'staging',
+    stage: 'dev',
     production: false,
-    resourceServerUrl: ''
+    resourceServerUrl: 'https://xblds0v161.execute-api.us-east-2.amazonaws.com/dev/'
 };

@@ -4,9 +4,9 @@ import {catchError, from, Observable, of, switchMap, throwError} from 'rxjs';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import {LoginSuccess} from './store/actions';
-import Auth from '@aws-amplify/auth';
 import {AuthAppState} from './store/reducers';
 import {Store} from '@ngrx/store';
+import Auth from '@aws-amplify/auth';
 
 @Injectable()
 export class AuthService
@@ -36,6 +36,7 @@ export class AuthService
         localStorage.setItem('accessToken', token);
     }
 
+    // eslint-disable-next-line @typescript-eslint/member-ordering
     get accessToken(): string
     {
         return localStorage.getItem('accessToken') ?? '';

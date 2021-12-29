@@ -19,19 +19,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import * as moment from 'moment';
 import { FuseFindByKeyPipeModule } from '@fuse/pipes/find-by-key';
 import { SharedModule } from 'app/shared/shared.module';
-import { contactsRoutes } from 'app/modules/admin/apps/contacts/contacts.routing';
-import { ContactsComponent } from 'app/modules/admin/apps/contacts/contacts.component';
-import { ContactsDetailsComponent } from 'app/modules/admin/apps/contacts/details/details.component';
-import { ContactsListComponent } from 'app/modules/admin/apps/contacts/list/list.component';
+import {usersRoutes} from 'app/modules/admin/apps/users/users.routing';
+import { UsersComponent } from 'app/modules/admin/apps/users/users.component';
+import { UsersDetailsComponent } from 'app/modules/admin/apps/users/details/details.component';
+import { UsersListComponent } from 'app/modules/admin/apps/users/list/list.component';
 
 @NgModule({
     declarations: [
-        ContactsComponent,
-        ContactsListComponent,
-        ContactsDetailsComponent
+        UsersComponent,
+        UsersListComponent,
+        UsersDetailsComponent
     ],
     imports     : [
-        RouterModule.forChild(contactsRoutes),
+        RouterModule.forChild(usersRoutes),
         MatButtonModule,
         MatCheckboxModule,
         MatDatepickerModule,
@@ -68,6 +68,6 @@ import { ContactsListComponent } from 'app/modules/admin/apps/contacts/list/list
         }
     ]
 })
-export class ContactsModule
+export class UsersModule
 {
 }

@@ -40,11 +40,11 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon    : 'heroicons_outline:home',
         children: [
             {
-                id   : 'apps.contacts',
-                title: 'Contacts',
+                id   : 'apps.users',
+                title: 'Users',
                 type : 'basic',
                 icon : 'heroicons_outline:user-group',
-                link : '/apps/contacts'
+                link : '/apps/users'
             },
             {
                 id      : 'apps.help-center',

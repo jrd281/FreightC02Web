@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
-import { ContactsService } from 'app/modules/admin/apps/contacts/contacts.service';
-import { Contact, Country, Tag } from 'app/modules/admin/apps/contacts/contacts.types';
+import { UsersService } from 'app/modules/admin/apps/users/users.service';
+import { User, Country, Tag } from 'app/modules/admin/apps/users/users.types';
 
 @Injectable({
     providedIn: 'root'
 })
-export class ContactsResolver implements Resolve<any>
+export class UsersResolver implements Resolve<any>
 {
     /**
      * Constructor
      */
-    constructor(private _contactsService: ContactsService)
+    constructor(private _usersService: UsersService)
     {
     }
 
@@ -26,22 +26,22 @@ export class ContactsResolver implements Resolve<any>
      * @param route
      * @param state
      */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Contact[]>
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User[]>
     {
-        return this._contactsService.getContacts();
+        return this._usersService.getUsers();
     }
 }
 
 @Injectable({
     providedIn: 'root'
 })
-export class ContactsContactResolver implements Resolve<any>
+export class UsersUserResolver implements Resolve<any>
 {
     /**
      * Constructor
      */
     constructor(
-        private _contactsService: ContactsService,
+        private _usersService: UsersService,
         private _router: Router
     )
     {
@@ -57,11 +57,11 @@ export class ContactsContactResolver implements Resolve<any>
      * @param route
      * @param state
      */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Contact>
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User>
     {
-        return this._contactsService.getContactById(route.paramMap.get('id'))
+        return this._usersService.getUserById(route.paramMap.get('id'))
                    .pipe(
-                       // Error here means the requested contact is not available
+                       // Error here means the requested user is not available
                        catchError((error) => {
 
                            // Log the error
@@ -83,12 +83,12 @@ export class ContactsContactResolver implements Resolve<any>
 @Injectable({
     providedIn: 'root'
 })
-export class ContactsCountriesResolver implements Resolve<any>
+export class UsersCountriesResolver implements Resolve<any>
 {
     /**
      * Constructor
      */
-    constructor(private _contactsService: ContactsService)
+    constructor(private _usersService: UsersService)
     {
     }
 
@@ -104,19 +104,19 @@ export class ContactsCountriesResolver implements Resolve<any>
      */
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Country[]>
     {
-        return this._contactsService.getCountries();
+        return this._usersService.getCountries();
     }
 }
 
 @Injectable({
     providedIn: 'root'
 })
-export class ContactsTagsResolver implements Resolve<any>
+export class UsersTagsResolver implements Resolve<any>
 {
     /**
      * Constructor
      */
-    constructor(private _contactsService: ContactsService)
+    constructor(private _usersService: UsersService)
     {
     }
 
@@ -132,6 +132,6 @@ export class ContactsTagsResolver implements Resolve<any>
      */
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Tag[]>
     {
-        return this._contactsService.getTags();
+        return this._usersService.getTags();
     }
 }

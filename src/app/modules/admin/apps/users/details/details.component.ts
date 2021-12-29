@@ -6,17 +6,17 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Contact, Country, Tag } from 'app/modules/admin/apps/contacts/contacts.types';
-import { ContactsListComponent } from 'app/modules/admin/apps/contacts/list/list.component';
-import { ContactsService } from 'app/modules/admin/apps/contacts/contacts.service';
+import { User, Country, Tag } from 'app/modules/admin/apps/users/users.types';
+import { UsersListComponent } from 'app/modules/admin/apps/users/list/list.component';
+import { UsersService } from 'app/modules/admin/apps/users/users.service';
 
 @Component({
-    selector       : 'contacts-details',
+    selector       : 'users-details',
     templateUrl    : './details.component.html',
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContactsDetailsComponent implements OnInit, OnDestroy
+export class UsersDetailsComponent implements OnInit, OnDestroy
 {
     @ViewChild('avatarFileInput') private _avatarFileInput: ElementRef;
     @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
@@ -26,9 +26,9 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     tags: Tag[];
     tagsEditMode: boolean = false;
     filteredTags: Tag[];
-    contact: Contact;
-    contactForm: FormGroup;
-    contacts: Contact[];
+    user: User;
+    userForm: FormGroup;
+    users: User[];
     countries: Country[];
     private _tagsPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -39,8 +39,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
-        private _contactsListComponent: ContactsListComponent,
-        private _contactsService: ContactsService,
+        private _usersListComponent: UsersListComponent,
+        private _usersService: UsersService,
         private _formBuilder: FormBuilder,
         private _fuseConfirmationService: FuseConfirmationService,
         private _renderer2: Renderer2,
@@ -61,10 +61,10 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     ngOnInit(): void
     {
         // Open the drawer
-        this._contactsListComponent.matDrawer.open();
+        this._usersListComponent.matDrawer.open();
 
-        // Create the contact form
-        this.contactForm = this._formBuilder.group({
+        // Create the user form
+        this.userForm = this._formBuilder.group({
             id          : [''],
             avatar      : [null],
             name        : ['', [Validators.required]],
@@ -78,41 +78,41 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
             tags        : [[]]
         });
 
-        // Get the contacts
-        this._contactsService.contacts$
+        // Get the users
+        this._usersService.users$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: Contact[]) => {
-                this.contacts = contacts;
+            .subscribe((users: User[]) => {
+                this.users = users;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Get the contact
-        this._contactsService.contact$
+        // Get the user
+        this._usersService.user$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contact: Contact) => {
+            .subscribe((user: User) => {
 
                 // Open the drawer in case it is closed
-                this._contactsListComponent.matDrawer.open();
+                this._usersListComponent.matDrawer.open();
 
-                // Get the contact
-                this.contact = contact;
+                // Get the user
+                this.user = user;
 
                 // Clear the emails and phoneNumbers form arrays
-                (this.contactForm.get('emails') as FormArray).clear();
-                (this.contactForm.get('phoneNumbers') as FormArray).clear();
+                (this.userForm.get('emails') as FormArray).clear();
+                (this.userForm.get('phoneNumbers') as FormArray).clear();
 
                 // Patch values to the form
-                this.contactForm.patchValue(contact);
+                this.userForm.patchValue(user);
 
                 // Setup the emails form array
                 const emailFormGroups = [];
 
-                if ( contact.emails.length > 0 )
+                if ( user.emails.length > 0 )
                 {
                     // Iterate through them
-                    contact.emails.forEach((email) => {
+                    user.emails.forEach((email) => {
 
                         // Create an email form group
                         emailFormGroups.push(
@@ -136,16 +136,16 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
 
                 // Add the email form groups to the emails form array
                 emailFormGroups.forEach((emailFormGroup) => {
-                    (this.contactForm.get('emails') as FormArray).push(emailFormGroup);
+                    (this.userForm.get('emails') as FormArray).push(emailFormGroup);
                 });
 
                 // Setup the phone numbers form array
                 const phoneNumbersFormGroups = [];
 
-                if ( contact.phoneNumbers.length > 0 )
+                if ( user.phoneNumbers.length > 0 )
                 {
                     // Iterate through them
-                    contact.phoneNumbers.forEach((phoneNumber) => {
+                    user.phoneNumbers.forEach((phoneNumber) => {
 
                         // Create an email form group
                         phoneNumbersFormGroups.push(
@@ -171,7 +171,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
 
                 // Add the phone numbers form groups to the phone numbers form array
                 phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
-                    (this.contactForm.get('phoneNumbers') as FormArray).push(phoneNumbersFormGroup);
+                    (this.userForm.get('phoneNumbers') as FormArray).push(phoneNumbersFormGroup);
                 });
 
                 // Toggle the edit mode off
@@ -182,7 +182,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
             });
 
         // Get the country telephone codes
-        this._contactsService.countries$
+        this._usersService.countries$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((codes: Country[]) => {
                 this.countries = codes;
@@ -192,7 +192,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
             });
 
         // Get the tags
-        this._contactsService.tags$
+        this._usersService.tags$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((tags: Tag[]) => {
                 this.tags = tags;
@@ -228,7 +228,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
      */
     closeDrawer(): Promise<MatDrawerToggleResult>
     {
-        return this._contactsListComponent.matDrawer.close();
+        return this._usersListComponent.matDrawer.close();
     }
 
     /**
@@ -252,20 +252,20 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Update the contact
+     * Update the user
      */
-    updateContact(): void
+    updateUser(): void
     {
-        // Get the contact object
-        const contact = this.contactForm.getRawValue();
+        // Get the user object
+        const user = this.userForm.getRawValue();
 
-        // Go through the contact object and clear empty values
-        contact.emails = contact.emails.filter(email => email.email);
+        // Go through the user object and clear empty values
+        user.emails = user.emails.filter(email => email.email);
 
-        contact.phoneNumbers = contact.phoneNumbers.filter(phoneNumber => phoneNumber.phoneNumber);
+        user.phoneNumbers = user.phoneNumbers.filter(phoneNumber => phoneNumber.phoneNumber);
 
-        // Update the contact on the server
-        this._contactsService.updateContact(contact.id, contact).subscribe(() => {
+        // Update the user on the server
+        this._usersService.updateUser(user.id, user).subscribe(() => {
 
             // Toggle the edit mode off
             this.toggleEditMode(false);
@@ -273,14 +273,14 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Delete the contact
+     * Delete the user
      */
-    deleteContact(): void
+    deleteUser(): void
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Delete contact',
-            message: 'Are you sure you want to delete this contact? This action cannot be undone!',
+            title  : 'Delete user',
+            message: 'Are you sure you want to delete this user? This action cannot be undone!',
             actions: {
                 confirm: {
                     label: 'Delete'
@@ -294,28 +294,28 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
             // If the confirm button pressed...
             if ( result === 'confirmed' )
             {
-                // Get the current contact's id
-                const id = this.contact.id;
+                // Get the current user's id
+                const id = this.user.id;
 
-                // Get the next/previous contact's id
-                const currentContactIndex = this.contacts.findIndex(item => item.id === id);
-                const nextContactIndex = currentContactIndex + ((currentContactIndex === (this.contacts.length - 1)) ? -1 : 1);
-                const nextContactId = (this.contacts.length === 1 && this.contacts[0].id === id) ? null : this.contacts[nextContactIndex].id;
+                // Get the next/previous user's id
+                const currentUserIndex = this.users.findIndex(item => item.id === id);
+                const nextUserIndex = currentUserIndex + ((currentUserIndex === (this.users.length - 1)) ? -1 : 1);
+                const nextUserId = (this.users.length === 1 && this.users[0].id === id) ? null : this.users[nextUserIndex].id;
 
-                // Delete the contact
-                this._contactsService.deleteContact(id)
+                // Delete the user
+                this._usersService.deleteUser(id)
                     .subscribe((isDeleted) => {
 
-                        // Return if the contact wasn't deleted...
+                        // Return if the user wasn't deleted...
                         if ( !isDeleted )
                         {
                             return;
                         }
 
-                        // Navigate to the next contact if available
-                        if ( nextContactId )
+                        // Navigate to the next user if available
+                        if ( nextUserId )
                         {
-                            this._router.navigate(['../', nextContactId], {relativeTo: this._activatedRoute});
+                            this._router.navigate(['../', nextUserId], {relativeTo: this._activatedRoute});
                         }
                         // Otherwise, navigate to the parent
                         else
@@ -357,7 +357,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         }
 
         // Upload the avatar
-        this._contactsService.uploadAvatar(this.contact.id, file).subscribe();
+        this._usersService.uploadAvatar(this.user.id, file).subscribe();
     }
 
     /**
@@ -366,7 +366,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     removeAvatar(): void
     {
         // Get the form control for 'avatar'
-        const avatarFormControl = this.contactForm.get('avatar');
+        const avatarFormControl = this.userForm.get('avatar');
 
         // Set the avatar as null
         avatarFormControl.setValue(null);
@@ -374,8 +374,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         // Set the file input value as null
         this._avatarFileInput.nativeElement.value = null;
 
-        // Update the contact
-        this.contact.avatar = null;
+        // Update the user
+        this.user.avatar = null;
     }
 
     /**
@@ -497,18 +497,18 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
 
         // If there is a tag...
         const tag = this.filteredTags[0];
-        const isTagApplied = this.contact.tags.find(id => id === tag.id);
+        const isTagApplied = this.user.tags.find(id => id === tag.id);
 
-        // If the found tag is already applied to the contact...
+        // If the found tag is already applied to the user...
         if ( isTagApplied )
         {
-            // Remove the tag from the contact
-            this.removeTagFromContact(tag);
+            // Remove the tag from the user
+            this.removeTagFromUser(tag);
         }
         else
         {
-            // Otherwise add the tag to the contact
-            this.addTagToContact(tag);
+            // Otherwise add the tag to the user
+            this.addTagToUser(tag);
         }
     }
 
@@ -524,11 +524,11 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         };
 
         // Create tag on the server
-        this._contactsService.createTag(tag)
+        this._usersService.createTag(tag)
             .subscribe((response) => {
 
-                // Add the tag to the contact
-                this.addTagToContact(response);
+                // Add the tag to the user
+                this.addTagToUser(response);
             });
     }
 
@@ -544,7 +544,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         tag.title = event.target.value;
 
         // Update the tag on the server
-        this._contactsService.updateTag(tag.id, tag)
+        this._usersService.updateTag(tag.id, tag)
             .pipe(debounceTime(300))
             .subscribe();
 
@@ -560,60 +560,60 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     deleteTag(tag: Tag): void
     {
         // Delete the tag from the server
-        this._contactsService.deleteTag(tag.id).subscribe();
+        this._usersService.deleteTag(tag.id).subscribe();
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
 
     /**
-     * Add tag to the contact
+     * Add tag to the user
      *
      * @param tag
      */
-    addTagToContact(tag: Tag): void
+    addTagToUser(tag: Tag): void
     {
         // Add the tag
-        this.contact.tags.unshift(tag.id);
+        this.user.tags.unshift(tag.id);
 
-        // Update the contact form
-        this.contactForm.get('tags').patchValue(this.contact.tags);
+        // Update the user form
+        this.userForm.get('tags').patchValue(this.user.tags);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
 
     /**
-     * Remove tag from the contact
+     * Remove tag from the user
      *
      * @param tag
      */
-    removeTagFromContact(tag: Tag): void
+    removeTagFromUser(tag: Tag): void
     {
         // Remove the tag
-        this.contact.tags.splice(this.contact.tags.findIndex(item => item === tag.id), 1);
+        this.user.tags.splice(this.user.tags.findIndex(item => item === tag.id), 1);
 
-        // Update the contact form
-        this.contactForm.get('tags').patchValue(this.contact.tags);
+        // Update the user form
+        this.userForm.get('tags').patchValue(this.user.tags);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
 
     /**
-     * Toggle contact tag
+     * Toggle user tag
      *
      * @param tag
      */
-    toggleContactTag(tag: Tag): void
+    toggleUserTag(tag: Tag): void
     {
-        if ( this.contact.tags.includes(tag.id) )
+        if ( this.user.tags.includes(tag.id) )
         {
-            this.removeTagFromContact(tag);
+            this.removeTagFromUser(tag);
         }
         else
         {
-            this.addTagToContact(tag);
+            this.addTagToUser(tag);
         }
     }
 
@@ -639,7 +639,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         });
 
         // Add the email form group to the emails form array
-        (this.contactForm.get('emails') as FormArray).push(emailFormGroup);
+        (this.userForm.get('emails') as FormArray).push(emailFormGroup);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -653,7 +653,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     removeEmailField(index: number): void
     {
         // Get form array for emails
-        const emailsFormArray = this.contactForm.get('emails') as FormArray;
+        const emailsFormArray = this.userForm.get('emails') as FormArray;
 
         // Remove the email field
         emailsFormArray.removeAt(index);
@@ -675,7 +675,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         });
 
         // Add the phone number form group to the phoneNumbers form array
-        (this.contactForm.get('phoneNumbers') as FormArray).push(phoneNumberFormGroup);
+        (this.userForm.get('phoneNumbers') as FormArray).push(phoneNumberFormGroup);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -689,7 +689,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     removePhoneNumberField(index: number): void
     {
         // Get form array for phone numbers
-        const phoneNumbersFormArray = this.contactForm.get('phoneNumbers') as FormArray;
+        const phoneNumbersFormArray = this.userForm.get('phoneNumbers') as FormArray;
 
         // Remove the phone number field
         phoneNumbersFormArray.removeAt(index);

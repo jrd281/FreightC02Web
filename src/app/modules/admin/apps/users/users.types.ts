@@ -1,4 +1,4 @@
-export interface Contact
+export interface User
 {
     id: string;
     avatar?: string | null;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
-import { User, Country, Tag } from 'app/modules/admin/apps/users/users.types';
+import { User } from 'app/modules/admin/apps/users/users.types';
 import {environment} from '../../../../../environments/environment';
 
 @Injectable({
@@ -50,7 +50,8 @@ export class UsersService
      */
     getUsers(): Observable<User[]>
     {
-        return this._httpClient.get<User[]>('api/apps/users/all').pipe(
+        const endpoint = this._backendUrl + '/users';
+        return this._httpClient.get<User[]>(endpoint).pipe(
             tap((users) => {
                 this._users.next(users);
             })
@@ -64,7 +65,8 @@ export class UsersService
      */
     searchUsers(query: string): Observable<User[]>
     {
-        return this._httpClient.get<User[]>('api/apps/users/search', {
+        const endpoint = this._backendUrl + '/users/search';
+        return this._httpClient.get<User[]>(endpoint, {
             params: {query}
         }).pipe(
             tap((users) => {

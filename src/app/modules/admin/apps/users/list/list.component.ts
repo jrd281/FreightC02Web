@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { filter, fromEvent, Observable, Subject, switchMap, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { User, Country } from 'app/modules/admin/apps/users/users.types';
+import { User } from 'app/modules/admin/apps/users/users.types';
 import { UsersService } from 'app/modules/admin/apps/users/users.service';
 
 @Component({
@@ -22,7 +22,6 @@ export class UsersListComponent implements OnInit, OnDestroy
 
     usersCount: number = 0;
     usersTableColumns: string[] = ['name', 'email', 'phoneNumber', 'job'];
-    countries: Country[];
     drawerMode: 'side' | 'over';
     searchInputControl: FormControl = new FormControl();
     selectedUser: User;
@@ -71,18 +70,6 @@ export class UsersListComponent implements OnInit, OnDestroy
 
                 // Update the selected user
                 this.selectedUser = user;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the countries
-        this._usersService.countries$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((countries: Country[]) => {
-
-                // Update the countries
-                this.countries = countries;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

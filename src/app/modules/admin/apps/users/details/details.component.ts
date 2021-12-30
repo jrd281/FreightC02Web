@@ -6,7 +6,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { User, Country, Tag } from 'app/modules/admin/apps/users/users.types';
+import { User } from 'app/modules/admin/apps/users/users.types';
 import { UsersListComponent } from 'app/modules/admin/apps/users/list/list.component';
 import { UsersService } from 'app/modules/admin/apps/users/users.service';
 
@@ -23,13 +23,10 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
     @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
 
     editMode: boolean = false;
-    tags: Tag[];
     tagsEditMode: boolean = false;
-    filteredTags: Tag[];
     user: User;
     userForm: FormGroup;
     users: User[];
-    countries: Country[];
     private _tagsPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -109,30 +106,30 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
                 // Setup the emails form array
                 const emailFormGroups = [];
 
-                if ( user.emails.length > 0 )
-                {
-                    // Iterate through them
-                    user.emails.forEach((email) => {
-
-                        // Create an email form group
-                        emailFormGroups.push(
-                            this._formBuilder.group({
-                                email: [email.email],
-                                label: [email.label]
-                            })
-                        );
-                    });
-                }
-                else
-                {
-                    // Create an email form group
-                    emailFormGroups.push(
-                        this._formBuilder.group({
-                            email: [''],
-                            label: ['']
-                        })
-                    );
-                }
+                // if ( user.emails.length > 0 )
+                // {
+                //     // Iterate through them
+                //     user.emails.forEach((email) => {
+                //
+                //         // Create an email form group
+                //         emailFormGroups.push(
+                //             this._formBuilder.group({
+                //                 email: [email.email],
+                //                 label: [email.label]
+                //             })
+                //         );
+                //     });
+                // }
+                // else
+                // {
+                //     // Create an email form group
+                //     emailFormGroups.push(
+                //         this._formBuilder.group({
+                //             email: [''],
+                //             label: ['']
+                //         })
+                //     );
+                // }
 
                 // Add the email form groups to the emails form array
                 emailFormGroups.forEach((emailFormGroup) => {
@@ -142,32 +139,32 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
                 // Setup the phone numbers form array
                 const phoneNumbersFormGroups = [];
 
-                if ( user.phoneNumbers.length > 0 )
-                {
-                    // Iterate through them
-                    user.phoneNumbers.forEach((phoneNumber) => {
-
-                        // Create an email form group
-                        phoneNumbersFormGroups.push(
-                            this._formBuilder.group({
-                                country    : [phoneNumber.country],
-                                phoneNumber: [phoneNumber.phoneNumber],
-                                label      : [phoneNumber.label]
-                            })
-                        );
-                    });
-                }
-                else
-                {
-                    // Create a phone number form group
-                    phoneNumbersFormGroups.push(
-                        this._formBuilder.group({
-                            country    : ['us'],
-                            phoneNumber: [''],
-                            label      : ['']
-                        })
-                    );
-                }
+                // if ( user.phoneNumbers.length > 0 )
+                // {
+                //     // Iterate through them
+                //     user.phoneNumbers.forEach((phoneNumber) => {
+                //
+                //         // Create an email form group
+                //         phoneNumbersFormGroups.push(
+                //             this._formBuilder.group({
+                //                 country    : [phoneNumber.country],
+                //                 phoneNumber: [phoneNumber.phoneNumber],
+                //                 label      : [phoneNumber.label]
+                //             })
+                //         );
+                //     });
+                // }
+                // else
+                // {
+                //     // Create a phone number form group
+                //     phoneNumbersFormGroups.push(
+                //         this._formBuilder.group({
+                //             country    : ['us'],
+                //             phoneNumber: [''],
+                //             label      : ['']
+                //         })
+                //     );
+                // }
 
                 // Add the phone numbers form groups to the phone numbers form array
                 phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
@@ -176,27 +173,6 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
 
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the country telephone codes
-        this._usersService.countries$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((codes: Country[]) => {
-                this.countries = codes;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Get the tags
-        this._usersService.tags$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((tags: Tag[]) => {
-                this.tags = tags;
-                this.filteredTags = tags;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -379,255 +355,6 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Open tags panel
-     */
-    openTagsPanel(): void
-    {
-        // Create the overlay
-        this._tagsPanelOverlayRef = this._overlay.create({
-            backdropClass   : '',
-            hasBackdrop     : true,
-            scrollStrategy  : this._overlay.scrollStrategies.block(),
-            positionStrategy: this._overlay.position()
-                                  .flexibleConnectedTo(this._tagsPanelOrigin.nativeElement)
-                                  .withFlexibleDimensions(true)
-                                  .withViewportMargin(64)
-                                  .withLockedPosition(true)
-                                  .withPositions([
-                                      {
-                                          originX : 'start',
-                                          originY : 'bottom',
-                                          overlayX: 'start',
-                                          overlayY: 'top'
-                                      }
-                                  ])
-        });
-
-        // Subscribe to the attachments observable
-        this._tagsPanelOverlayRef.attachments().subscribe(() => {
-
-            // Add a class to the origin
-            this._renderer2.addClass(this._tagsPanelOrigin.nativeElement, 'panel-opened');
-
-            // Focus to the search input once the overlay has been attached
-            this._tagsPanelOverlayRef.overlayElement.querySelector('input').focus();
-        });
-
-        // Create a portal from the template
-        const templatePortal = new TemplatePortal(this._tagsPanel, this._viewContainerRef);
-
-        // Attach the portal to the overlay
-        this._tagsPanelOverlayRef.attach(templatePortal);
-
-        // Subscribe to the backdrop click
-        this._tagsPanelOverlayRef.backdropClick().subscribe(() => {
-
-            // Remove the class from the origin
-            this._renderer2.removeClass(this._tagsPanelOrigin.nativeElement, 'panel-opened');
-
-            // If overlay exists and attached...
-            if ( this._tagsPanelOverlayRef && this._tagsPanelOverlayRef.hasAttached() )
-            {
-                // Detach it
-                this._tagsPanelOverlayRef.detach();
-
-                // Reset the tag filter
-                this.filteredTags = this.tags;
-
-                // Toggle the edit mode off
-                this.tagsEditMode = false;
-            }
-
-            // If template portal exists and attached...
-            if ( templatePortal && templatePortal.isAttached )
-            {
-                // Detach it
-                templatePortal.detach();
-            }
-        });
-    }
-
-    /**
-     * Toggle the tags edit mode
-     */
-    toggleTagsEditMode(): void
-    {
-        this.tagsEditMode = !this.tagsEditMode;
-    }
-
-    /**
-     * Filter tags
-     *
-     * @param event
-     */
-    filterTags(event): void
-    {
-        // Get the value
-        const value = event.target.value.toLowerCase();
-
-        // Filter the tags
-        this.filteredTags = this.tags.filter(tag => tag.title.toLowerCase().includes(value));
-    }
-
-    /**
-     * Filter tags input key down event
-     *
-     * @param event
-     */
-    filterTagsInputKeyDown(event): void
-    {
-        // Return if the pressed key is not 'Enter'
-        if ( event.key !== 'Enter' )
-        {
-            return;
-        }
-
-        // If there is no tag available...
-        if ( this.filteredTags.length === 0 )
-        {
-            // Create the tag
-            this.createTag(event.target.value);
-
-            // Clear the input
-            event.target.value = '';
-
-            // Return
-            return;
-        }
-
-        // If there is a tag...
-        const tag = this.filteredTags[0];
-        const isTagApplied = this.user.tags.find(id => id === tag.id);
-
-        // If the found tag is already applied to the user...
-        if ( isTagApplied )
-        {
-            // Remove the tag from the user
-            this.removeTagFromUser(tag);
-        }
-        else
-        {
-            // Otherwise add the tag to the user
-            this.addTagToUser(tag);
-        }
-    }
-
-    /**
-     * Create a new tag
-     *
-     * @param title
-     */
-    createTag(title: string): void
-    {
-        const tag = {
-            title
-        };
-
-        // Create tag on the server
-        this._usersService.createTag(tag)
-            .subscribe((response) => {
-
-                // Add the tag to the user
-                this.addTagToUser(response);
-            });
-    }
-
-    /**
-     * Update the tag title
-     *
-     * @param tag
-     * @param event
-     */
-    updateTagTitle(tag: Tag, event): void
-    {
-        // Update the title on the tag
-        tag.title = event.target.value;
-
-        // Update the tag on the server
-        this._usersService.updateTag(tag.id, tag)
-            .pipe(debounceTime(300))
-            .subscribe();
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Delete the tag
-     *
-     * @param tag
-     */
-    deleteTag(tag: Tag): void
-    {
-        // Delete the tag from the server
-        this._usersService.deleteTag(tag.id).subscribe();
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Add tag to the user
-     *
-     * @param tag
-     */
-    addTagToUser(tag: Tag): void
-    {
-        // Add the tag
-        this.user.tags.unshift(tag.id);
-
-        // Update the user form
-        this.userForm.get('tags').patchValue(this.user.tags);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Remove tag from the user
-     *
-     * @param tag
-     */
-    removeTagFromUser(tag: Tag): void
-    {
-        // Remove the tag
-        this.user.tags.splice(this.user.tags.findIndex(item => item === tag.id), 1);
-
-        // Update the user form
-        this.userForm.get('tags').patchValue(this.user.tags);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Toggle user tag
-     *
-     * @param tag
-     */
-    toggleUserTag(tag: Tag): void
-    {
-        if ( this.user.tags.includes(tag.id) )
-        {
-            this.removeTagFromUser(tag);
-        }
-        else
-        {
-            this.addTagToUser(tag);
-        }
-    }
-
-    /**
-     * Should the create tag button be visible
-     *
-     * @param inputValue
-     */
-    shouldShowCreateTagButton(inputValue: string): boolean
-    {
-        return !!!(inputValue === '' || this.tags.findIndex(tag => tag.title.toLowerCase() === inputValue.toLowerCase()) > -1);
-    }
-
-    /**
      * Add the email field
      */
     addEmailField(): void
@@ -696,16 +423,6 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Get country info by iso code
-     *
-     * @param iso
-     */
-    getCountryByIso(iso: string): Country
-    {
-        return this.countries.find(country => country.iso === iso);
     }
 
     /**

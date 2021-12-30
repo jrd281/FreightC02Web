@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 import { CanDeactivateUsersDetails } from 'app/modules/admin/apps/users/users.guards';
-import { UsersUserResolver, UsersCountriesResolver, UsersResolver, UsersTagsResolver } from 'app/modules/admin/apps/users/users.resolvers';
+import { UsersUserResolver, UsersResolver } from 'app/modules/admin/apps/users/users.resolvers';
 import { UsersComponent } from 'app/modules/admin/apps/users/users.component';
 import { UsersListComponent } from 'app/modules/admin/apps/users/list/list.component';
 import { UsersDetailsComponent } from 'app/modules/admin/apps/users/details/details.component';

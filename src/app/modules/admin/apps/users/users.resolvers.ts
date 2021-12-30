@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
 import { UsersService } from 'app/modules/admin/apps/users/users.service';
-import { User, Country, Tag } from 'app/modules/admin/apps/users/users.types';
+import { User } from 'app/modules/admin/apps/users/users.types';
 
 @Injectable({
     providedIn: 'root'
@@ -77,61 +77,5 @@ export class UsersUserResolver implements Resolve<any>
                            return throwError(error);
                        })
                    );
-    }
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class UsersCountriesResolver implements Resolve<any>
-{
-    /**
-     * Constructor
-     */
-    constructor(private _usersService: UsersService)
-    {
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Country[]>
-    {
-        return this._usersService.getCountries();
-    }
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class UsersTagsResolver implements Resolve<any>
-{
-    /**
-     * Constructor
-     */
-    constructor(private _usersService: UsersService)
-    {
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Tag[]>
-    {
-        return this._usersService.getTags();
     }
 }

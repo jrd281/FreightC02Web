@@ -1,37 +1,31 @@
 export interface User
 {
     id: string;
-    avatar?: string | null;
-    background?: string | null;
+    avatar: string;
     name: string;
-    emails?: {
-        email: string;
-        label: string;
-    }[];
-    phoneNumbers?: {
-        country: string;
-        phoneNumber: string;
-        label: string;
-    }[];
-    title?: string;
-    company?: string;
-    birthday?: string | null;
-    address?: string | null;
-    notes?: string | null;
-    tags: string[];
+    background: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    lastLogin: Date;
+    active: boolean;
+    status: string;
+    profile: string;
 }
 
-export interface Country
-{
-    id: string;
-    iso: string;
-    name: string;
-    code: string;
-    flagImagePos: string;
-}
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+export function createUser(): User {
+    const returnUser = {
+        'id': '',
+        'avatar': '',
+        'background': '',
+        'firstName': '',
+        'lastName': '',
+        'email' : '',
+        'active': true,
+        'status': '',
+        'profile': ''
+    } as User;
 
-export interface Tag
-{
-    id?: string;
-    title?: string;
+    return returnUser;
 }

@@ -27,7 +27,11 @@ const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
     scrollPositionRestoration: 'enabled'
 };
-export const startupServiceFactory = (authConfigService: AuthConfigService, authService: AuthService): () => Promise<Observable<any> | AuthConfigModel> => (): Promise<Observable<any> | AuthConfigModel> => authConfigService.initialize().then(value => authService.checkCognitoAuth()).then();
+export const startupServiceFactory = (authConfigService: AuthConfigService, authService: AuthService): () => Promise<Observable<any> | AuthConfigModel> => {
+    return (): Promise<Observable<any> | AuthConfigModel> => {
+        return authConfigService.initialize().then(value => authService.checkCognitoAuth());
+    };
+};
 
 export const metaReducers: MetaReducer<any>[] = !environment.production
     ? [storeFreeze]

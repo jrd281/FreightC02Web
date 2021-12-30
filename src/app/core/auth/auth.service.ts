@@ -7,6 +7,7 @@ import {LoginSuccess} from './store/actions';
 import {AuthAppState} from './store/reducers';
 import {Store} from '@ngrx/store';
 import Auth from '@aws-amplify/auth';
+import {getAccessToken, getLoggedInState} from "./store/selectors/auth.selectors";
 
 @Injectable()
 export class AuthService
@@ -22,6 +23,18 @@ export class AuthService
         private _store: Store<AuthAppState>
     )
     {
+        // @ts-ignore
+        this._store.select(getLoggedInState)
+            .pipe()
+            .subscribe((value) => {
+                this._authenticated = value;
+            });
+
+        this._store.select(getAccessToken)
+            .pipe()
+            .subscribe((value) => {
+                this.accessToken = value;
+            });
     }
 
     // -----------------------------------------------------------------------------------------------------

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { User, Country, Tag } from 'app/modules/admin/apps/users/users.types';
+import {environment} from '../../../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -9,10 +10,9 @@ import { User, Country, Tag } from 'app/modules/admin/apps/users/users.types';
 export class UsersService
 {
     // Private
+    private _backendUrl: string =  environment.resourceServerUrl;
     private _user: BehaviorSubject<User | null> = new BehaviorSubject(null);
     private _users: BehaviorSubject<User[] | null> = new BehaviorSubject(null);
-    private _countries: BehaviorSubject<Country[] | null> = new BehaviorSubject(null);
-    private _tags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(null);
 
     /**
      * Constructor
@@ -39,22 +39,6 @@ export class UsersService
     get users$(): Observable<User[]>
     {
         return this._users.asObservable();
-    }
-
-    /**
-     * Getter for countries
-     */
-    get countries$(): Observable<Country[]>
-    {
-        return this._countries.asObservable();
-    }
-
-    /**
-     * Getter for tags
-     */
-    get tags$(): Observable<Tag[]>
-    {
-        return this._tags.asObservable();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -207,133 +191,6 @@ export class UsersService
                     // Return the deleted status
                     return isDeleted;
                 })
-            ))
-        );
-    }
-
-    /**
-     * Get countries
-     */
-    getCountries(): Observable<Country[]>
-    {
-        return this._httpClient.get<Country[]>('api/apps/users/countries').pipe(
-            tap((countries) => {
-                this._countries.next(countries);
-            })
-        );
-    }
-
-    /**
-     * Get tags
-     */
-    getTags(): Observable<Tag[]>
-    {
-        return this._httpClient.get<Tag[]>('api/apps/users/tags').pipe(
-            tap((tags) => {
-                this._tags.next(tags);
-            })
-        );
-    }
-
-    /**
-     * Create tag
-     *
-     * @param tag
-     */
-    createTag(tag: Tag): Observable<Tag>
-    {
-        return this.tags$.pipe(
-            take(1),
-            switchMap(tags => this._httpClient.post<Tag>('api/apps/users/tag', {tag}).pipe(
-                map((newTag) => {
-
-                    // Update the tags with the new tag
-                    this._tags.next([...tags, newTag]);
-
-                    // Return new tag from observable
-                    return newTag;
-                })
-            ))
-        );
-    }
-
-    /**
-     * Update the tag
-     *
-     * @param id
-     * @param tag
-     */
-    updateTag(id: string, tag: Tag): Observable<Tag>
-    {
-        return this.tags$.pipe(
-            take(1),
-            switchMap(tags => this._httpClient.patch<Tag>('api/apps/users/tag', {
-                id,
-                tag
-            }).pipe(
-                map((updatedTag) => {
-
-                    // Find the index of the updated tag
-                    const index = tags.findIndex(item => item.id === id);
-
-                    // Update the tag
-                    tags[index] = updatedTag;
-
-                    // Update the tags
-                    this._tags.next(tags);
-
-                    // Return the updated tag
-                    return updatedTag;
-                })
-            ))
-        );
-    }
-
-    /**
-     * Delete the tag
-     *
-     * @param id
-     */
-    deleteTag(id: string): Observable<boolean>
-    {
-        return this.tags$.pipe(
-            take(1),
-            switchMap(tags => this._httpClient.delete('api/apps/users/tag', {params: {id}}).pipe(
-                map((isDeleted: boolean) => {
-
-                    // Find the index of the deleted tag
-                    const index = tags.findIndex(item => item.id === id);
-
-                    // Delete the tag
-                    tags.splice(index, 1);
-
-                    // Update the tags
-                    this._tags.next(tags);
-
-                    // Return the deleted status
-                    return isDeleted;
-                }),
-                filter(isDeleted => isDeleted),
-                switchMap(isDeleted => this.users$.pipe(
-                    take(1),
-                    map((users) => {
-
-                        // Iterate through the users
-                        users.forEach((user) => {
-
-                            const tagIndex = user.tags.findIndex(tag => tag === id);
-
-                            // If the user has the tag, remove it
-                            if ( tagIndex > -1 )
-                            {
-                                user.tags.splice(tagIndex, 1);
-                            }
-                        });
-
-                        // Return the deleted status
-                        return isDeleted;
-                    })
-                ))
             ))
         );
     }

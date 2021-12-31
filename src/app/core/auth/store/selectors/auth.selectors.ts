@@ -3,7 +3,9 @@ import {createSelector} from '@ngrx/store';
 
 export const getLoggedInState = createSelector(
     getAuthState,
-    (state: AuthState) => state.isLoggedIn
+    (state: AuthState) => {
+        return state.isLoggedIn;
+    }
 );
 
 export const getAccessToken = createSelector(

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {catchError, from, Observable, of, switchMap, throwError} from 'rxjs';
+import {BehaviorSubject, catchError, from, Observable, of, switchMap, throwError} from 'rxjs';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import {LoginSuccess} from './store/actions';
@@ -13,8 +13,7 @@ import {Hub} from 'aws-amplify';
 @Injectable()
 export class AuthService
 {
-    private _authenticated: boolean = false;
-
+    private _authenticated: BehaviorSubject<boolean | null> = new BehaviorSubject(null);
     /**
      * Constructor
      */
@@ -49,7 +48,7 @@ export class AuthService
         this._store.select(getLoggedInState)
             .pipe()
             .subscribe((value) => {
-                this._authenticated = value;
+                this._authenticated.next(value);
             });
 
         this._store.select(getAccessToken)
@@ -82,6 +81,15 @@ export class AuthService
     // -----------------------------------------------------------------------------------------------------
 
     /**
+     * Getter for contact
+     */
+    // eslint-disable-next-line @typescript-eslint/member-ordering
+    get authenticated$(): Observable<boolean>
+    {
+        return this._authenticated.asObservable();
+    }
+
+    /**
      * Forgot password
      *
      * @param email
@@ -110,7 +118,7 @@ export class AuthService
         localStorage.removeItem('accessToken');
 
         // Set the authenticated flag to false
-        this._authenticated = false;
+        this._authenticated.next(false);
 
         // Return the observable
         return of(true);

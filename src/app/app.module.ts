@@ -22,6 +22,7 @@ import {AuthConfigService} from './core/auth/auth-config.service';
 import {AuthService} from './core/auth/auth.service';
 import {Observable} from 'rxjs';
 import {AuthConfigModel} from './core/auth/auth-config.model';
+import {getLoggedInState} from "./core/auth/store/selectors/auth.selectors";
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
@@ -29,7 +30,9 @@ const routerConfig: ExtraOptions = {
 };
 export const startupServiceFactory = (authConfigService: AuthConfigService, authService: AuthService): () => Promise<Observable<any> | AuthConfigModel> => {
     return (): Promise<Observable<any> | AuthConfigModel> => {
-        return authConfigService.initialize().then(value => authService.checkCognitoAuth());
+        return authConfigService.initialize().then(value => authService.checkCognitoAuth()).then(value => {
+            return authService.authenticated$;
+        });
     };
 };
 

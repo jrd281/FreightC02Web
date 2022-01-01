@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
+import {HttpClient, HttpResponse} from '@angular/common/http';
+import {BehaviorSubject, catchError, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
 import { User } from 'app/modules/admin/apps/users/users.types';
 import {environment} from '../../../../../environments/environment';
 
@@ -52,9 +52,32 @@ export class UsersService
     {
         const endpoint = this._backendUrl + '/users';
         return this._httpClient.get<User[]>(endpoint).pipe(
-            tap((users) => {
+            tap((response: any[]) => {
+                const users = response[0] !== undefined ? response[0] : [];
+                // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+                const compare = ({a, b}: { a: any; b: any }) => {
+                    const aProperty = a.firstName !== undefined ? a.firstName.toUpperCase() : '';
+                    const bProperty = b.firstName !== undefined ? b.firstName.toUpperCase() : '';
+                    if (aProperty < bProperty) {
+                        return -1;
+                    }
+                    if (aProperty > bProperty) {
+                        return 1;
+                    }
+                    return 0;
+                };
+
+                users.sort(compare);
                 this._users.next(users);
-            })
+            }),
+            catchError((httpResponse: HttpResponse<any>) => {
+                const errorMessage = this.getErrorMessage(httpResponse);
+                // Log the error
+                console.error(errorMessage);
+
+                // Throw an error
+                return throwError(errorMessage);
+            }),
         );
     }
 
@@ -80,28 +103,21 @@ export class UsersService
      */
     getUserById(id: string): Observable<User>
     {
-        return this._users.pipe(
-            take(1),
-            map((users) => {
-
-                // Find the user
-                const user = users.find(item => item.id === id) || null;
-
-                // Update the user
+        const endpoint = this._backendUrl + '/users/' + id;
+        // @ts-ignore
+        return this._httpClient.get<User[]>(endpoint).pipe(
+            tap((response: any[]) => {
+                const user = response[0] !== undefined ? response[0] : [];
                 this._user.next(user);
-
-                // Return the user
-                return user;
             }),
-            switchMap((user) => {
+            catchError((httpResponse: HttpResponse<any>) => {
+                const errorMessage = this.getErrorMessage(httpResponse);
+                // Log the error
+                console.error(errorMessage);
 
-                if ( !user )
-                {
-                    return throwError('Could not found user with id of ' + id + '!');
-                }
-
-                return of(user);
-            })
+                // Throw an error
+                return throwError(errorMessage);
+            }),
         );
     }
 
@@ -244,5 +260,15 @@ export class UsersService
                 ))
             ))
         );
+    }
+
+    getErrorMessage(httpResponse: HttpResponse<any>): string {
+        const errorArr = httpResponse['error'] ?? ['','Unknown Error'];
+        let errorMessage = errorArr.length > 1 ? String(errorArr[1]) : '';
+
+        // This is because a Cognito error will output the "AdminUserSet permissions...: User friendly error"
+        errorMessage = errorMessage.indexOf(':') > -1 ? errorMessage.substr(errorMessage.indexOf(':')  + 1, errorMessage.length) : errorMessage;
+
+        return errorMessage;
     }
 }

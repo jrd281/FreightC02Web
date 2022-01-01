@@ -23,12 +23,14 @@ import {usersRoutes} from 'app/modules/admin/apps/users/users.routing';
 import { UsersComponent } from 'app/modules/admin/apps/users/users.component';
 import { UsersDetailsComponent } from 'app/modules/admin/apps/users/details/details.component';
 import { UsersListComponent } from 'app/modules/admin/apps/users/list/list.component';
+import {ProfilePipe} from "./pipes/profile.pipe";
 
 @NgModule({
     declarations: [
         UsersComponent,
         UsersListComponent,
-        UsersDetailsComponent
+        UsersDetailsComponent,
+        ProfilePipe
     ],
     imports     : [
         RouterModule.forChild(usersRoutes),

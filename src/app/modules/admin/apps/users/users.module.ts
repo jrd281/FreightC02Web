@@ -23,14 +23,16 @@ import {usersRoutes} from 'app/modules/admin/apps/users/users.routing';
 import { UsersComponent } from 'app/modules/admin/apps/users/users.component';
 import { UsersDetailsComponent } from 'app/modules/admin/apps/users/details/details.component';
 import { UsersListComponent } from 'app/modules/admin/apps/users/list/list.component';
-import {ProfilePipe} from "./pipes/profile.pipe";
+import {ProfilePipe} from './pipes/profile.pipe';
+import {PasswordChangeComponent} from './password-change/password-change.component';
 
 @NgModule({
     declarations: [
         UsersComponent,
         UsersListComponent,
         UsersDetailsComponent,
-        ProfilePipe
+        ProfilePipe,
+        PasswordChangeComponent
     ],
     imports     : [
         RouterModule.forChild(usersRoutes),

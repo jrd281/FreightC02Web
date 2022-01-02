@@ -142,6 +142,30 @@ export class UsersService
     }
 
     /**
+     * Change Password
+     */
+    changePassword(id: string, password: string): Observable<any> {
+        const endpoint = this._backendUrl + '/users/' + id + '/password';
+
+        return this.users$.pipe(
+            take(1),
+            switchMap(users => this._httpClient.put<any[]>(endpoint,
+                {password}
+            ).pipe(
+                catchError((httpResponse: HttpResponse<any>) => {
+                    const errorMessage = this.getErrorMessage(httpResponse);
+                    // Log the error
+                    console.error(errorMessage);
+
+                    // Throw an error
+                    return throwError(errorMessage);
+                }),
+                map((response: any) => true),
+            ))
+        );
+    }
+
+    /**
      * Update user
      *
      * @param id

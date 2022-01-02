@@ -12,6 +12,8 @@ import { UsersService } from 'app/modules/admin/apps/users/users.service';
 import {getIsAdminUser} from '../../../../../core/auth/store/selectors/auth.selectors';
 import {Store} from '@ngrx/store';
 import {AuthAppState} from "../../../../../core/auth/store/reducers";
+import {PasswordChangeComponent} from "../password-change/password-change.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector       : 'users-details',
@@ -60,7 +62,8 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
         private _renderer2: Renderer2,
         private _router: Router,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _matDialog: MatDialog
     )
     {
     }
@@ -414,6 +417,15 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
     trackByFn(index: number, item: any): any
     {
         return item.id || index;
+    }
+
+    private changePassword(): void {
+        this._matDialog.open(PasswordChangeComponent, {
+            autoFocus: false,
+            data     : {
+                user: this.user
+            }
+        });
     }
 
     private setUpEditView(user: User): void {

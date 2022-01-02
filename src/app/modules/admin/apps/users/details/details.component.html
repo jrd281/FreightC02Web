@@ -217,6 +217,22 @@
                         </mat-form-field>
                     </div>
 
+                    <ng-container *ngIf="isAdminUser">
+                        <div class="mt-8 space-x-3">
+                            <!-- Change Password -->
+                            <ng-container>
+                                <button
+                                    class="fuse-mat-button-rounded bg-accent-700"
+                                    mat-flat-button
+                                    [matTooltip]="'Change Password'"
+                                    [color]="'accent'"
+                                    (click)="changePassword()">
+                                    <span class="ml-2">Change Password</span>
+                                </button>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+
                     <!-- Actions -->
                     <div class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
                         <!-- Delete -->

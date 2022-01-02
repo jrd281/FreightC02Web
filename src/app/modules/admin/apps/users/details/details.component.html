@@ -4,7 +4,7 @@
     <ng-container *ngIf="!editMode">
 
         <!-- Header -->
-        <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
+        <div class="relative w-full h-20 sm:h-20 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
             <!-- Background -->
             <ng-container *ngIf="user.background">
                 <img
@@ -81,45 +81,12 @@
                     </div>
                 </div>
 
-
-
                 <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
                     <!-- Profile -->
                     <div class="flex sm:items-center">
                         <mat-icon [svgIcon]="'heroicons_outline:identification'"></mat-icon>
                         <div class="ml-6 leading-6">{{ user | profilePipe }}</div>
                     </div>
-                </div>
-
-
-                <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
-                    <!-- First Name -->
-                    <ng-container *ngIf="user.firstName">
-                        <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon>
-                            <div class="ml-6 leading-6">{{user.firstName}}</div>
-                        </div>
-                    </ng-container>
-                </div>
-
-                <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
-                    <!-- Last Name -->
-                    <ng-container *ngIf="user.lastName">
-                        <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon>
-                            <div class="ml-6 leading-6">{{user.lastName}}</div>
-                        </div>
-                    </ng-container>
-                </div>
-
-                <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
-                    <!-- Title -->
-                    <ng-container *ngIf="user.email">
-                        <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon>
-                            <div class="ml-6 leading-6">{{user.email}}</div>
-                        </div>
-                    </ng-container>
                 </div>
 
             </div>
@@ -130,7 +97,7 @@
     <ng-container *ngIf="editMode">
 
         <!-- Header -->
-        <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
+        <div class="relative w-full h-20 sm:h-20 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
             <!-- Background -->
             <ng-container *ngIf="user.background">
                 <img
@@ -158,37 +125,6 @@
                     <!-- Avatar -->
                     <div class="flex flex-auto items-end -mt-16">
                         <div class="relative flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
-                            <!-- Upload / Remove avatar -->
-                            <div class="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
-                            <div class="absolute inset-0 flex items-center justify-center z-20">
-                                <div>
-                                    <input
-                                        id="avatar-file-input"
-                                        class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
-                                        type="file"
-                                        [multiple]="false"
-                                        [accept]="'image/jpeg, image/png'"
-                                        (change)="uploadAvatar(avatarFileInput.files)"
-                                        #avatarFileInput>
-                                    <label
-                                        class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-hover"
-                                        for="avatar-file-input"
-                                        matRipple>
-                                        <mat-icon
-                                            class="text-white"
-                                            [svgIcon]="'heroicons_outline:camera'"></mat-icon>
-                                    </label>
-                                </div>
-                                <div>
-                                    <button
-                                        mat-icon-button
-                                        (click)="removeAvatar()">
-                                        <mat-icon
-                                            class="text-white"
-                                            [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                                    </button>
-                                </div>
-                            </div>
                             <!-- Image/Letter -->
                             <img
                                 class="object-cover w-full h-full"
@@ -202,23 +138,39 @@
                         </div>
                     </div>
 
-                    <!-- Name -->
+                    <!-- First Name -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Name</mat-label>
+                            <mat-label>First Name</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
                             <input
                                 matInput
-                                [formControlName]="'name'"
-                                [placeholder]="'Name'"
+                                [formControlName]="'firstName'"
+                                [placeholder]="'First Name'"
                                 [spellcheck]="false">
                         </mat-form-field>
                     </div>
 
-                    <!-- Title -->
+                    <!-- Last Name -->
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Last Name</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                            <input
+                                matInput
+                                [formControlName]="'lastName'"
+                                [placeholder]="'Last Name'"
+                                [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Email -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
                             <mat-label>Email</mat-label>
@@ -230,6 +182,38 @@
                                 matInput
                                 [formControlName]="'email'"
                                 [placeholder]="'Email'">
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Active -->
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Active</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
+                            <mat-select [formControlName]="'active'">
+                                <mat-option *ngFor="let active of activeTypes" [value]="active.value">
+                                    {{active.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Profile -->
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Profile</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_outline:identification'"></mat-icon>
+                            <mat-select [formControlName]="'profile'">
+                                <mat-option *ngFor="let profileType of profileTypes" [value]="profileType.value">
+                                    {{profileType.label}}
+                                </mat-option>
+                            </mat-select>
                         </mat-form-field>
                     </div>
 
@@ -248,7 +232,7 @@
                             class="ml-auto"
                             mat-button
                             [matTooltip]="'Cancel'"
-                            (click)="toggleEditMode(false)">
+                            (click)="cancelEdit()">
                             Cancel
                         </button>
                         <!-- Save -->

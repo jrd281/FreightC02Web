@@ -9,6 +9,9 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { User } from 'app/modules/admin/apps/users/users.types';
 import { UsersListComponent } from 'app/modules/admin/apps/users/list/list.component';
 import { UsersService } from 'app/modules/admin/apps/users/users.service';
+import {getIsAdminUser} from '../../../../../core/auth/store/selectors/auth.selectors';
+import {Store} from '@ngrx/store';
+import {AuthAppState} from "../../../../../core/auth/store/reducers";
 
 @Component({
     selector       : 'users-details',
@@ -24,9 +27,22 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
 
     editMode: boolean = false;
     tagsEditMode: boolean = false;
+    createMode: boolean = false;
+    isAdminUser: boolean = false;
     user: User;
     userForm: FormGroup;
     users: User[];
+
+    profileTypes: ProfileType[] = [
+        { 'value' : 'USER', 'label': 'User'},
+        { 'value' : 'POWER_USER', 'label': 'Power User'},
+        { 'value' : 'ADMIN_USER', 'label': 'Admin'},
+    ];
+    activeTypes: ActiveType[] = [
+        { 'value' : true, 'label': 'Active'},
+        { 'value' : false, 'label': 'Inactive'},
+    ];
+
     private _tagsPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -34,6 +50,7 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
      * Constructor
      */
     constructor(
+        private _store: Store<AuthAppState>,
         private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
         private _usersListComponent: UsersListComponent,
@@ -64,16 +81,18 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
         this.userForm = this._formBuilder.group({
             id          : [''],
             avatar      : [null],
-            name        : ['', [Validators.required]],
-            emails      : this._formBuilder.array([]),
-            phoneNumbers: this._formBuilder.array([]),
-            title       : [''],
-            company     : [''],
-            birthday    : [null],
-            address     : [null],
-            notes       : [null],
-            tags        : [[]]
+            firstName   : ['', [Validators.required]],
+            lastName    : ['', [Validators.required]],
+            email       : ['', [Validators.required]],
+            active      : [true],
+            profile     : ['USER']
         });
+
+        this._store.select(getIsAdminUser)
+            .pipe()
+            .subscribe((value) => {
+                this.isAdminUser = value;
+            });
 
         // Get the users
         this._usersService.users$
@@ -96,83 +115,21 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
                 // Get the user
                 this.user = user;
 
-                // Clear the emails and phoneNumbers form arrays
-                (this.userForm.get('emails') as FormArray).clear();
-                (this.userForm.get('phoneNumbers') as FormArray).clear();
+                this.setUpEditView(this.user);
 
-                // Patch values to the form
-                this.userForm.patchValue(user);
-
-                // Setup the emails form array
-                const emailFormGroups = [];
-
-                // if ( user.emails.length > 0 )
-                // {
-                //     // Iterate through them
-                //     user.emails.forEach((email) => {
-                //
-                //         // Create an email form group
-                //         emailFormGroups.push(
-                //             this._formBuilder.group({
-                //                 email: [email.email],
-                //                 label: [email.label]
-                //             })
-                //         );
-                //     });
-                // }
-                // else
-                // {
-                //     // Create an email form group
-                //     emailFormGroups.push(
-                //         this._formBuilder.group({
-                //             email: [''],
-                //             label: ['']
-                //         })
-                //     );
-                // }
-
-                // Add the email form groups to the emails form array
-                emailFormGroups.forEach((emailFormGroup) => {
-                    (this.userForm.get('emails') as FormArray).push(emailFormGroup);
-                });
-
-                // Setup the phone numbers form array
-                const phoneNumbersFormGroups = [];
-
-                // if ( user.phoneNumbers.length > 0 )
-                // {
-                //     // Iterate through them
-                //     user.phoneNumbers.forEach((phoneNumber) => {
-                //
-                //         // Create an email form group
-                //         phoneNumbersFormGroups.push(
-                //             this._formBuilder.group({
-                //                 country    : [phoneNumber.country],
-                //                 phoneNumber: [phoneNumber.phoneNumber],
-                //                 label      : [phoneNumber.label]
-                //             })
-                //         );
-                //     });
-                // }
-                // else
-                // {
-                //     // Create a phone number form group
-                //     phoneNumbersFormGroups.push(
-                //         this._formBuilder.group({
-                //             country    : ['us'],
-                //             phoneNumber: [''],
-                //             label      : ['']
-                //         })
-                //     );
-                // }
-
-                // Add the phone numbers form groups to the phone numbers form array
-                phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
-                    (this.userForm.get('phoneNumbers') as FormArray).push(phoneNumbersFormGroup);
-                });
+                // Clear the password controls so they
+                // don't interfere with validation
+                //this.clearPasswords();
 
                 // Toggle the edit mode off
-                this.toggleEditMode(false);
+                if ( user.id === 'new' ) {
+                    this.toggleEditMode(true);
+                    this.toggleCreateMode(true);
+                }
+                else {
+                    this.toggleEditMode(false);
+                    this.toggleCreateMode(false);
+                }
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -227,6 +184,25 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
         this._changeDetectorRef.markForCheck();
     }
 
+    /**
+     * Toggle create mode
+     *
+     * @param createMode
+     */
+    toggleCreateMode(createMode: boolean | null = null): void
+    {
+        if ( createMode === null )
+        {
+            this.createMode = !this.createMode;
+        }
+        else
+        {
+            this.createMode = createMode;
+        }
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
     /**
      * Update the user
      */
@@ -307,7 +283,11 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             }
         });
+    }
 
+    cancelEdit(): void {
+        this.toggleEditMode(false);
+        this.setUpEditView(this.user);
     }
 
     /**
@@ -435,4 +415,19 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
+
+    private setUpEditView(user: User): void {
+        // Patch values to the form
+        this.userForm.patchValue(user);
+    }
+}
+
+export class ActiveType {
+    value: boolean;
+    label: string;
+}
+
+export class ProfileType {
+    value: string;
+    label: string;
 }

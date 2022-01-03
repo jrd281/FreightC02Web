@@ -39,7 +39,9 @@
                         <div
                             class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
                             *ngIf="!user.avatar">
-                            {{user.name.charAt(0)}}
+                            <div *ngIf="user.name !== undefined && (!user.name.length > 0)">
+                                {{user.name.charAt(0)}}
+                            </div>
                         </div>
                     </div>
                     <!-- Actions -->
@@ -133,7 +135,9 @@
                             <div
                                 class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
                                 *ngIf="!user.avatar">
-                                {{user.name.charAt(0)}}
+                                <div *ngIf="user.name !== undefined && (!user.name.length > 0)">
+                                    {{user.name.charAt(0)}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -217,7 +221,7 @@
                         </mat-form-field>
                     </div>
 
-                    <ng-container *ngIf="isAdminUser">
+                    <ng-container *ngIf="isAdminUser && !createMode">
                         <div class="mt-8 space-x-3">
                             <!-- Change Password -->
                             <ng-container>
@@ -258,7 +262,7 @@
                             [color]="'primary'"
                             [disabled]="userForm.invalid"
                             [matTooltip]="'Save'"
-                            (click)="updateUser()">
+                            (click)="saveUser()">
                             Save
                         </button>
                     </div>

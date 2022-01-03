@@ -14,17 +14,18 @@ export interface User
 }
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-export function createUser(): User {
+export function createDefaultUser(): User {
     const returnUser = {
         'id': '',
         'avatar': '',
         'background': '',
+        'name': '',
         'firstName': '',
         'lastName': '',
         'email' : '',
         'active': true,
         'status': '',
-        'profile': ''
+        'profile': 'USER'
     } as User;
 
     return returnUser;

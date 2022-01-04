@@ -55,20 +55,7 @@ export class UsersService
             tap((response: any[]) => {
                 const users = response[0] !== undefined ? response[0] : [];
 
-                // eslint-disable-next-line @typescript-eslint/explicit-function-return-type,prefer-arrow/prefer-arrow-functions
-                function compare( a, b ) {
-                    const aProperty = a.firstName !== undefined ? a.firstName.toUpperCase() : ''
-                    const bProperty = b.firstName !== undefined ? b.firstName.toUpperCase() : ''
-                    if ( aProperty < bProperty ){
-                        return -1;
-                    }
-                    if ( aProperty > bProperty ){
-                        return 1;
-                    }
-                    return 0;
-                }
-
-                users.sort(compare);
+                users.sort(this.userSortCompare);
                 this._users.next(users);
             }),
             catchError((httpResponse: HttpResponse<any>) => {
@@ -217,7 +204,7 @@ export class UsersService
                     const updatedUser = response[0];
                     // Add the user
                     users.push(updatedUser);
-
+                    users.sort(this.userSortCompare);
                     // Update the users
                     this._users.next(users);
 
@@ -380,5 +367,17 @@ export class UsersService
         errorMessage = errorMessage.indexOf(':') > -1 ? errorMessage.substr(errorMessage.indexOf(':')  + 1, errorMessage.length) : errorMessage;
 
         return errorMessage;
+    }
+
+    userSortCompare( a: User, b: User ): number {
+        const aProperty = a.firstName !== undefined ? a.firstName.toUpperCase() : '';
+        const bProperty = b.firstName !== undefined ? b.firstName.toUpperCase() : '';
+        if ( aProperty < bProperty ){
+            return -1;
+        }
+        if ( aProperty > bProperty ){
+            return 1;
+        }
+        return 0;
     }
 }

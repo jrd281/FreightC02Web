@@ -336,7 +336,7 @@ export class UsersService
     }
 
     getErrorMessage(httpResponse: HttpResponse<any>): string {
-        let errorMessage = httpResponse['error'] ??  httpResponse['message'] ?? ['','Unknown Error'];
+        let errorMessage = httpResponse['error'] ??  httpResponse['message'] ?? '';
 
         // This is because a Cognito error will output the "AdminUserSet permissions...: User friendly error"
         errorMessage = errorMessage.indexOf(':') > -1 ? errorMessage.substr(errorMessage.indexOf(':')  + 1, errorMessage.length) : errorMessage;

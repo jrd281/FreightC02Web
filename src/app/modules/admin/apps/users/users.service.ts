@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, catchError, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
-import { User } from 'app/modules/admin/apps/users/users.types';
+import {createDefaultUser, User} from 'app/modules/admin/apps/users/users.types';
 import {environment} from '../../../../../environments/environment';
 
 @Injectable({
@@ -54,20 +54,8 @@ export class UsersService
         return this._httpClient.get<User[]>(endpoint).pipe(
             tap((response: any[]) => {
                 const users = response[0] !== undefined ? response[0] : [];
-                // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-                const compare = ({a, b}: { a: any; b: any }) => {
-                    const aProperty = a.firstName !== undefined ? a.firstName.toUpperCase() : '';
-                    const bProperty = b.firstName !== undefined ? b.firstName.toUpperCase() : '';
-                    if (aProperty < bProperty) {
-                        return -1;
-                    }
-                    if (aProperty > bProperty) {
-                        return 1;
-                    }
-                    return 0;
-                };
 
-                users.sort(compare);
+                users.sort(this.userSortCompare);
                 this._users.next(users);
             }),
             catchError((httpResponse: HttpResponse<any>) => {
@@ -92,8 +80,17 @@ export class UsersService
         return this._httpClient.get<User[]>(endpoint, {
             params: {query}
         }).pipe(
-            tap((users) => {
+            tap((response: any[]) => {
+                const users = response[0] !== undefined ? response[0] : [];
                 this._users.next(users);
+            }),
+            catchError((httpResponse: HttpResponse<any>) => {
+                const errorMessage = this.getErrorMessage(httpResponse);
+                // Log the error
+                console.error(errorMessage);
+
+                // Throw an error
+                return throwError(errorMessage);
             })
         );
     }
@@ -104,6 +101,15 @@ export class UsersService
     getUserById(id: string): Observable<User>
     {
         const endpoint = this._backendUrl + '/users/' + id;
+
+        // Cut out early if the user is new
+        // even though we are doing double work.
+        if ( id === 'new') {
+            const user = createDefaultUser();
+            user.id = 'new';
+            this._user.next(user);
+            return of(user);
+        }
         // @ts-ignore
         return this._httpClient.get<User[]>(endpoint).pipe(
             tap((response: any[]) => {
@@ -126,39 +132,35 @@ export class UsersService
      */
     createUser(): Observable<User>
     {
-        return this.users$.pipe(
-            take(1),
-            switchMap(users => this._httpClient.post<User>('api/apps/users/user', {}).pipe(
-                map((newUser) => {
-
-                    // Update the users with the new user
-                    this._users.next([newUser, ...users]);
-
-                    // Return the new user
-                    return newUser;
-                })
-            ))
-        );
+        const user = createDefaultUser();
+        user.id = 'new';
+        return of(user);
     }
 
     /**
-     * Update user
+     * Patch user
      *
-     * @param id
      * @param user
      */
-    updateUser(id: string, user: User): Observable<User>
+    patchUser(user: User): Observable<User>
     {
+        const endpoint = this._backendUrl + '/users';
         return this.users$.pipe(
             take(1),
-            switchMap(users => this._httpClient.patch<User>('api/apps/users/user', {
-                id,
-                user
-            }).pipe(
-                map((updatedUser) => {
+            switchMap(users => this._httpClient.patch<any[]>(endpoint, user
+            ).pipe(
+                catchError((httpResponse: HttpResponse<any>) => {
+                    const errorMessage = this.getErrorMessage(httpResponse);
+                    // Log the error
+                    console.error(errorMessage);
 
+                    // Throw an error
+                    return throwError(errorMessage);
+                }),
+                map((response: any[]) => {
+                    const updatedUser = response[0] as User;
                     // Find the index of the updated user
-                    const index = users.findIndex(item => item.id === id);
+                    const index = users.findIndex(item => item.id === updatedUser.id);
 
                     // Update the user
                     users[index] = updatedUser;
@@ -171,7 +173,7 @@ export class UsersService
                 }),
                 switchMap(updatedUser => this.user$.pipe(
                     take(1),
-                    filter(item => item && item.id === id),
+                    filter(item => item && item.id === updatedUser.id),
                     tap(() => {
 
                         // Update the user if it's selected
@@ -186,15 +188,86 @@ export class UsersService
     }
 
     /**
+     * Post user
+     *
+     * @param user
+     */
+    postUser(user: User): Observable<User>
+    {
+        const endpoint = this._backendUrl + '/users';
+
+        return this.users$.pipe(
+            take(1),
+            switchMap(users => this._httpClient.post<any[]>(endpoint,
+                user
+            ).pipe(
+                catchError((httpResponse: HttpResponse<any>) => {
+                    const errorMessage = this.getErrorMessage(httpResponse);
+                    // Log the error
+                    console.error(errorMessage);
+
+                    // Throw an error
+                    return throwError(errorMessage);
+                }),
+                map((response: any[]) => {
+                    const updatedUser = response[0];
+                    // Add the user
+                    users.push(updatedUser);
+                    users.sort(this.userSortCompare);
+                    // Update the users
+                    this._users.next(users);
+
+                    // Return the updated user1
+                    return updatedUser;
+                })
+            ))
+        );
+    }
+
+    /**
+     * Change Password
+     */
+    changePassword(id: string, password: string): Observable<any> {
+        const endpoint = this._backendUrl + '/users/' + id + '/password';
+
+        return this.users$.pipe(
+            take(1),
+            switchMap(users => this._httpClient.put<any[]>(endpoint,
+                {password}
+            ).pipe(
+                catchError((httpResponse: HttpResponse<any>) => {
+                    const errorMessage = this.getErrorMessage(httpResponse);
+                    // Log the error
+                    console.error(errorMessage);
+
+                    // Throw an error
+                    return throwError(errorMessage);
+                }),
+                map((response: any) => true),
+            ))
+        );
+    }
+
+
+    /**
      * Delete the user
      *
      * @param id
      */
     deleteUser(id: string): Observable<boolean>
     {
+        const endpoint = this._backendUrl + '/users/' + id;
         return this.users$.pipe(
             take(1),
-            switchMap(users => this._httpClient.delete('api/apps/users/user', {params: {id}}).pipe(
+            switchMap(users => this._httpClient.delete(endpoint).pipe(
+                catchError((httpResponse: HttpResponse<any>) => {
+                    const errorMessage = this.getErrorMessage(httpResponse);
+                    // Log the error
+                    console.error(errorMessage);
+
+                    // Throw an error
+                    return throwError(errorMessage);
+                }),
                 map((isDeleted: boolean) => {
 
                     // Find the index of the deleted user
@@ -263,12 +336,23 @@ export class UsersService
     }
 
     getErrorMessage(httpResponse: HttpResponse<any>): string {
-        const errorArr = httpResponse['error'] ?? ['','Unknown Error'];
-        let errorMessage = errorArr.length > 1 ? String(errorArr[1]) : '';
+        let errorMessage = httpResponse['error'] ??  httpResponse['message'] ?? '';
 
         // This is because a Cognito error will output the "AdminUserSet permissions...: User friendly error"
         errorMessage = errorMessage.indexOf(':') > -1 ? errorMessage.substr(errorMessage.indexOf(':')  + 1, errorMessage.length) : errorMessage;
 
         return errorMessage;
+    }
+
+    userSortCompare( a: User, b: User ): number {
+        const aProperty = a.firstName !== undefined ? a.firstName.toUpperCase() : '';
+        const bProperty = b.firstName !== undefined ? b.firstName.toUpperCase() : '';
+        if ( aProperty < bProperty ){
+            return -1;
+        }
+        if ( aProperty > bProperty ){
+            return 1;
+        }
+        return 0;
     }
 }

@@ -11,7 +11,9 @@ import { UsersListComponent } from 'app/modules/admin/apps/users/list/list.compo
 import { UsersService } from 'app/modules/admin/apps/users/users.service';
 import {getIsAdminUser} from '../../../../../core/auth/store/selectors/auth.selectors';
 import {Store} from '@ngrx/store';
-import {AuthAppState} from "../../../../../core/auth/store/reducers";
+import {AuthAppState} from '../../../../../core/auth/store/reducers';
+import {PasswordChangeComponent} from '../password-change/password-change.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
     selector       : 'users-details',
@@ -34,9 +36,9 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
     users: User[];
 
     profileTypes: ProfileType[] = [
-        { 'value' : 'USER', 'label': 'User'},
-        { 'value' : 'POWER_USER', 'label': 'Power User'},
-        { 'value' : 'ADMIN_USER', 'label': 'Admin'},
+        { 'value' : 'USER', 'label': 'User', 'description': 'Can view reports'},
+        { 'value' : 'POWER_USER', 'label': 'Power User', 'description': 'Can view reports and add Users'},
+        { 'value' : 'ADMIN_USER', 'label': 'Admin', 'description': 'Can view reports, modify all Users and view client keys'},
     ];
     activeTypes: ActiveType[] = [
         { 'value' : true, 'label': 'Active'},
@@ -60,7 +62,8 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
         private _renderer2: Renderer2,
         private _router: Router,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _matDialog: MatDialog
     )
     {
     }
@@ -85,7 +88,7 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
             lastName    : ['', [Validators.required]],
             email       : ['', [Validators.required]],
             active      : [true],
-            profile     : ['USER']
+            profile     : ['USER', [Validators.required]]
         });
 
         this._store.select(getIsAdminUser)
@@ -111,6 +114,10 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
 
                 // Open the drawer in case it is closed
                 this._usersListComponent.matDrawer.open();
+
+                // Reset the user form since we've got
+                // a new user
+                this.userForm.reset();
 
                 // Get the user
                 this.user = user;
@@ -203,25 +210,96 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
+
     /**
-     * Update the user
+     * We need a function to provide the label for the profile type
+     * dropdown since the value is changed
      */
-    updateUser(): void
+    public profileTypeLabelFunction(profileTypeValue: string): string {
+        const filteredProfileType = this.profileTypes.find(value => value.value === profileTypeValue);
+        const filteredProfileLabel = filteredProfileType !== undefined ? filteredProfileType['label'] : '';
+        return filteredProfileLabel;
+    }
+
+    /**
+     * Save the user
+     */
+    saveUser(): void
     {
         // Get the user object
         const user = this.userForm.getRawValue();
 
-        // Go through the user object and clear empty values
-        user.emails = user.emails.filter(email => email.email);
+        if ( user.id === 'new' ) {
+            // Create the user on the server
+            this._usersService.postUser(user).subscribe((newUser) => {
+                if ( newUser )
+                {
+                    const id = newUser.id;
+                    this._router.navigate(['../', id], {relativeTo: this._activatedRoute});
+                }
+            },(error) => {
+                const errorConfirmation = this._fuseConfirmationService.open({
+                    title  : 'Error',
+                    message: error,
+                    icon: {
+                        show: true,
+                        name: 'heroicons_outline:exclamation',
+                        color: 'error'
+                    },
+                    actions: {
+                        confirm: {
+                            label: 'OK'
+                        },
+                        cancel: {
+                            show: false
+                        }
+                    }
+                });
+            });
+        } else {
+            // Create the user on the server
+            this._usersService.patchUser(user).subscribe((updatedUser) => {
+                    this._fuseConfirmationService.open({
+                        title  : 'Update Successful',
+                        message: 'Update Successful',
+                        icon: {
+                            show: true,
+                            name: 'heroicons_outline:check-circle',
+                            color: 'success'
+                        },
+                        actions: {
+                            confirm: {
+                                label: 'OK'
+                            },
+                            cancel: {
+                                show: false
+                            }
+                        }
+                    });
 
-        user.phoneNumbers = user.phoneNumbers.filter(phoneNumber => phoneNumber.phoneNumber);
-
-        // Update the user on the server
-        this._usersService.updateUser(user.id, user).subscribe(() => {
-
-            // Toggle the edit mode off
-            this.toggleEditMode(false);
-        });
+                    // Toggle the edit mode off
+                    this.toggleEditMode(false);
+                },
+                (error) => {
+                    const errorConfirmation = this._fuseConfirmationService.open({
+                        title  : 'Error',
+                        message: error,
+                        icon: {
+                            show: true,
+                            name: 'heroicons_outline:exclamation',
+                            color: 'error'
+                        },
+                        actions: {
+                            confirm: {
+                                label: 'OK'
+                            },
+                            cancel: {
+                                show: false
+                            }
+                        }
+                    });
+                });
+        }
     }
 
     /**
@@ -291,121 +369,6 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Upload avatar
-     *
-     * @param fileList
-     */
-    uploadAvatar(fileList: FileList): void
-    {
-        // Return if canceled
-        if ( !fileList.length )
-        {
-            return;
-        }
-
-        const allowedTypes = ['image/jpeg', 'image/png'];
-        const file = fileList[0];
-
-        // Return if the file is not allowed
-        if ( !allowedTypes.includes(file.type) )
-        {
-            return;
-        }
-
-        // Upload the avatar
-        this._usersService.uploadAvatar(this.user.id, file).subscribe();
-    }
-
-    /**
-     * Remove the avatar
-     */
-    removeAvatar(): void
-    {
-        // Get the form control for 'avatar'
-        const avatarFormControl = this.userForm.get('avatar');
-
-        // Set the avatar as null
-        avatarFormControl.setValue(null);
-
-        // Set the file input value as null
-        this._avatarFileInput.nativeElement.value = null;
-
-        // Update the user
-        this.user.avatar = null;
-    }
-
-    /**
-     * Add the email field
-     */
-    addEmailField(): void
-    {
-        // Create an empty email form group
-        const emailFormGroup = this._formBuilder.group({
-            email: [''],
-            label: ['']
-        });
-
-        // Add the email form group to the emails form array
-        (this.userForm.get('emails') as FormArray).push(emailFormGroup);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Remove the email field
-     *
-     * @param index
-     */
-    removeEmailField(index: number): void
-    {
-        // Get form array for emails
-        const emailsFormArray = this.userForm.get('emails') as FormArray;
-
-        // Remove the email field
-        emailsFormArray.removeAt(index);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Add an empty phone number field
-     */
-    addPhoneNumberField(): void
-    {
-        // Create an empty phone number form group
-        const phoneNumberFormGroup = this._formBuilder.group({
-            country    : ['us'],
-            phoneNumber: [''],
-            label      : ['']
-        });
-
-        // Add the phone number form group to the phoneNumbers form array
-        (this.userForm.get('phoneNumbers') as FormArray).push(phoneNumberFormGroup);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Remove the phone number field
-     *
-     * @param index
-     */
-    removePhoneNumberField(index: number): void
-    {
-        // Get form array for phone numbers
-        const phoneNumbersFormArray = this.userForm.get('phoneNumbers') as FormArray;
-
-        // Remove the phone number field
-        phoneNumbersFormArray.removeAt(index);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
      * Track by function for ngFor loops
      *
      * @param index
@@ -414,6 +377,15 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
     trackByFn(index: number, item: any): any
     {
         return item.id || index;
+    }
+
+    private changePassword(): void {
+        this._matDialog.open(PasswordChangeComponent, {
+            autoFocus: false,
+            data     : {
+                user: this.user
+            }
+        });
     }
 
     private setUpEditView(user: User): void {
@@ -430,4 +402,5 @@ export class ActiveType {
 export class ProfileType {
     value: string;
     label: string;
+    description: string;
 }

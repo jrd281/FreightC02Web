@@ -36,9 +36,9 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
     users: User[];
 
     profileTypes: ProfileType[] = [
-        { 'value' : 'USER', 'label': 'User'},
-        { 'value' : 'POWER_USER', 'label': 'Power User'},
-        { 'value' : 'ADMIN_USER', 'label': 'Admin'},
+        { 'value' : 'USER', 'label': 'User', 'description': 'Can view reports'},
+        { 'value' : 'POWER_USER', 'label': 'Power User', 'description': 'Can view reports and add Users'},
+        { 'value' : 'ADMIN_USER', 'label': 'Admin', 'description': 'Can view reports, modify all Users and view client keys'},
     ];
     activeTypes: ActiveType[] = [
         { 'value' : true, 'label': 'Active'},
@@ -211,6 +211,15 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
         this._changeDetectorRef.markForCheck();
     }
 
+    /**
+     * We need a function to provide the label for the profile type
+     * dropdown since the value is changed
+     */
+    public profileTypeLabelFunction(profileTypeValue: string): string {
+        const filteredProfileType = this.profileTypes.find(value => value.value === profileTypeValue);
+        const filteredProfileLabel = filteredProfileType !== undefined ? filteredProfileType['label'] : '';
+        return filteredProfileLabel;
+    }
 
     /**
      * Save the user
@@ -393,4 +402,5 @@ export class ActiveType {
 export class ProfileType {
     value: string;
     label: string;
+    description: string;
 }

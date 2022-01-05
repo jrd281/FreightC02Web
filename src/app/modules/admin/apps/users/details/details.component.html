@@ -213,11 +213,41 @@
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_outline:identification'"></mat-icon>
-                            <mat-select [formControlName]="'profile'">
-                                <mat-option *ngFor="let profileType of profileTypes" [value]="profileType.value">
-                                    {{profileType.label}}
-                                </mat-option>
+                            <mat-select [formControlName]="'profile'"
+                                [panelClass]="'w-72 min-w-72 max-w-72 h-auto max-h-none'"
+                                disableOptionCentering
+                                #profileTypeSelect="matSelect">
+                                <mat-select-trigger class="text-md">
+                                    <span class="ml-1 font-medium">{{ profileTypeLabelFunction(profileTypeSelect.value) | titlecase}}</span>
+                                </mat-select-trigger>
+                                <ng-container *ngFor="let profileType of profileTypes">
+                                    <mat-option
+                                        class="h-auto py-4 leading-none"
+                                        [value]="profileType.value">
+                                        <div class="font-medium">{{profileType.label}}</div>
+                                        <div class="mt-1.5 text-sm whitespace-normal leading-normal text-secondary">{{profileType.description}}</div>
+                                    </mat-option>
+                                </ng-container>
                             </mat-select>
+
+<!--                            <mat-select-trigger class="text-md">-->
+<!--                                <span>Role:</span>-->
+<!--                                <span class="ml-1 font-medium">{{roleSelect.value | titlecase}}</span>-->
+<!--                            </mat-select-trigger>-->
+<!--                            <ng-container *ngFor="let profileType of profileTypes">-->
+<!--                                <mat-option-->
+<!--                                    class="h-auto py-4 leading-none"-->
+<!--                                    [value]="profileType.value">-->
+<!--                                    <div class="font-medium">{{profileType.label}}</div>-->
+<!--                                    <div class="mt-1.5 text-sm whitespace-normal leading-normal text-secondary">{{profileType.description}}</div>-->
+<!--                                </mat-option>-->
+<!--                            </ng-container>-->
+<!--                            <mat-select [formControlName]="'profile'">-->
+<!--                                <mat-option *ngFor="let profileType of profileTypes" [value]="profileType.value">-->
+<!--                                    <div class="font-medium">{{profileType.label}}</div>-->
+<!--                                    <div class="mt-1.5 text-sm whitespace-normal leading-normal text-secondary">{{profileType.description}}</div>-->
+<!--                                </mat-option>-->
+<!--                            </mat-select>-->
                         </mat-form-field>
                     </div>
 

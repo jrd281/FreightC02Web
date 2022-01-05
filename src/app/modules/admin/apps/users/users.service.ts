@@ -80,8 +80,17 @@ export class UsersService
         return this._httpClient.get<User[]>(endpoint, {
             params: {query}
         }).pipe(
-            tap((users) => {
+            tap((response: any[]) => {
+                const users = response[0] !== undefined ? response[0] : [];
                 this._users.next(users);
+            }),
+            catchError((httpResponse: HttpResponse<any>) => {
+                const errorMessage = this.getErrorMessage(httpResponse);
+                // Log the error
+                console.error(errorMessage);
+
+                // Throw an error
+                return throwError(errorMessage);
             })
         );
     }
@@ -239,49 +248,6 @@ export class UsersService
         );
     }
 
-    /**
-     * Update user
-     *
-     * @param id
-     * @param user
-     */
-    updateUser(id: string, user: User): Observable<User>
-    {
-        return this.users$.pipe(
-            take(1),
-            switchMap(users => this._httpClient.patch<User>('api/apps/users/user', {
-                id,
-                user
-            }).pipe(
-                map((updatedUser) => {
-
-                    // Find the index of the updated user
-                    const index = users.findIndex(item => item.id === id);
-
-                    // Update the user
-                    users[index] = updatedUser;
-
-                    // Update the users
-                    this._users.next(users);
-
-                    // Return the updated user
-                    return updatedUser;
-                }),
-                switchMap(updatedUser => this.user$.pipe(
-                    take(1),
-                    filter(item => item && item.id === id),
-                    tap(() => {
-
-                        // Update the user if it's selected
-                        this._user.next(updatedUser);
-
-                        // Return the updated user
-                        return updatedUser;
-                    })
-                ))
-            ))
-        );
-    }
 
     /**
      * Delete the user
@@ -290,9 +256,18 @@ export class UsersService
      */
     deleteUser(id: string): Observable<boolean>
     {
+        const endpoint = this._backendUrl + '/users/' + id;
         return this.users$.pipe(
             take(1),
-            switchMap(users => this._httpClient.delete('api/apps/users/user', {params: {id}}).pipe(
+            switchMap(users => this._httpClient.delete(endpoint).pipe(
+                catchError((httpResponse: HttpResponse<any>) => {
+                    const errorMessage = this.getErrorMessage(httpResponse);
+                    // Log the error
+                    console.error(errorMessage);
+
+                    // Throw an error
+                    return throwError(errorMessage);
+                }),
                 map((isDeleted: boolean) => {
 
                     // Find the index of the deleted user

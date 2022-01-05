@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
-import { filter, fromEvent, Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, fromEvent, Observable, Subject, switchMap, takeUntil} from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { User } from 'app/modules/admin/apps/users/users.types';
 import { UsersService } from 'app/modules/admin/apps/users/users.service';
@@ -76,11 +76,14 @@ export class UsersListComponent implements OnInit, OnDestroy
             });
 
         // Subscribe to search input field value changes
+        // Use 'distinctUntilChanged' to only respond to
+        // actual changes to the text by stripping and trimming
         this.searchInputControl.valueChanges
             .pipe(
+                debounceTime(500),
+                distinctUntilChanged((prev, curr) => String(prev ?? '').trim() === String(curr ?? '').trim()),
                 takeUntil(this._unsubscribeAll),
                 switchMap(query =>
-
                     // Search
                     this._usersService.searchUsers(query)
                 )

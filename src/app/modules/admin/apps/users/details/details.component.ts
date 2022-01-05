@@ -115,6 +115,10 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
                 // Open the drawer in case it is closed
                 this._usersListComponent.matDrawer.open();
 
+                // Reset the user form since we've got
+                // a new user
+                this.userForm.reset();
+
                 // Get the user
                 this.user = user;
 
@@ -224,6 +228,24 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
                     const id = newUser.id;
                     this._router.navigate(['../', id], {relativeTo: this._activatedRoute});
                 }
+            },(error) => {
+                const errorConfirmation = this._fuseConfirmationService.open({
+                    title  : 'Error',
+                    message: error,
+                    icon: {
+                        show: true,
+                        name: 'heroicons_outline:exclamation',
+                        color: 'error'
+                    },
+                    actions: {
+                        confirm: {
+                            label: 'OK'
+                        },
+                        cancel: {
+                            show: false
+                        }
+                    }
+                });
             });
         } else {
             // Create the user on the server

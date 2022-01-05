@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-    selector       : 'settings-account',
-    templateUrl    : './account.component.html',
+    selector       : 'settings-information',
+    templateUrl    : './information.component.html',
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingsAccountComponent implements OnInit
+export class SettingsInformationComponent implements OnInit
 {
-    accountForm: FormGroup;
+    informationForm: FormGroup;
 
     /**
      * Constructor
@@ -30,16 +30,16 @@ export class SettingsAccountComponent implements OnInit
     ngOnInit(): void
     {
         // Create the form
-        this.accountForm = this._formBuilder.group({
-            name    : ['Brian Hughes'],
-            username: ['brianh'],
-            title   : ['Senior Frontend Developer'],
-            company : ['YXZ Software'],
-            about   : ['Hey! This is Brian; husband, father and gamer. I\'m mostly passionate about bleeding edge tech and chocolate! 🍫'],
-            email   : ['hughes.brian@mail.com', Validators.email],
-            phone   : ['121-490-33-12'],
-            country : ['usa'],
-            language: ['english']
+        this.informationForm = this._formBuilder.group({
+            companyName    : ['Alphabet'],
+            companyWebsite   : ['www.google.com'],
+            companyContactEmail: ['hughes.brian@mail.com', Validators.email],
+            companyContactPhone: ['121-490-33-12'],
+            companyStreetAddressOne: ['100 Main St'],
+            companyStreetAddressTwo: ['Apt. 35B'],
+            companyCity: ['Spartanburg'],
+            companyState: ['SC'],
+            companyCountry: ['usa'],
         });
     }
 }

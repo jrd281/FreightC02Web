@@ -15,7 +15,7 @@ export class SettingsComponent implements OnInit, OnDestroy
     drawerMode: 'over' | 'side' = 'side';
     drawerOpened: boolean = true;
     panels: any[] = [];
-    selectedPanel: string = 'account';
+    selectedPanel: string = 'information';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -40,10 +40,10 @@ export class SettingsComponent implements OnInit, OnDestroy
         // Setup available panels
         this.panels = [
             {
-                id         : 'account',
-                icon       : 'heroicons_outline:user-circle',
-                title      : 'Account',
-                description: 'Manage your public profile and private information'
+                id         : 'information',
+                icon       : 'heroicons_outline:office-building',
+                title      : 'Information',
+                description: 'Company Information'
             },
             {
                 id         : 'security',

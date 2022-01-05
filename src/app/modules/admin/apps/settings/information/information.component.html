@@ -1,0 +1,180 @@
+<div class="w-full max-w-3xl">
+
+    <!-- Form -->
+    <form [formGroup]="informationForm">
+
+        <!-- Company Section -->
+        <div class="w-full">
+            <div class="text-xl">Profile</div>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+            <!-- Company Name -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Company Name</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:office-building'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'companyName'"
+                        matInput>
+                </mat-form-field>
+            </div>
+
+            <!-- Company Website -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Company Website</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:link'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'companyWebsite'"
+                        matInput>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="my-5 border-t"></div>
+
+        <!-- Contact Information Section -->
+        <div class="w-full">
+            <div class="text-xl">Contact Information</div>
+        </div>
+
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+            <!-- Company Email -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Company Email</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:mail'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'companyContactEmail'"
+                        matInput>
+                </mat-form-field>
+            </div>
+
+            <!-- Company Phone -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Company Phone</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:phone'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'companyContactPhone'"
+                        matInput>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="my-5 border-t"></div>
+
+        <!-- Location Section -->
+        <div class="w-full">
+            <div class="text-xl">Location</div>
+        </div>
+
+        <div class="grid sm:grid-cols-6 gap-6 w-full mt-8">
+            <!-- Company Address One -->
+            <div class="sm:col-span-6">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Company Address One</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:location-marker'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'companyStreetAddressOne'"
+                        matInput>
+                </mat-form-field>
+            </div>
+
+            <!-- Company Address Two -->
+            <div class="sm:col-span-6">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Company Address Two</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:location-marker'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'companyStreetAddressTwo'"
+                        matInput>
+                </mat-form-field>
+            </div>
+
+            <!-- Company City -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Company City</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:location-marker'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'companyCity'"
+                        matInput>
+                </mat-form-field>
+            </div>
+
+            <!-- Company State -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Company State</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:location-marker'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'companyState'"
+                        matInput>
+                </mat-form-field>
+            </div>
+
+            <!-- Company Country -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Country</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:location-marker'"
+                        matPrefix></mat-icon>
+                    <mat-select [formControlName]="'companyCountry'">
+                        <mat-option [value]="'usa'">United States</mat-option>
+                        <mat-option [value]="'canada'">Canada</mat-option>
+                        <mat-option [value]="'mexico'">Mexico</mat-option>
+                        <mat-option [value]="'france'">France</mat-option>
+                        <mat-option [value]="'germany'">Germany</mat-option>
+                        <mat-option [value]="'italy'">Italy</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="mt-11 mb-10 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            <button
+                mat-stroked-button
+                type="button">
+                Cancel
+            </button>
+            <button
+                class="ml-4"
+                mat-flat-button
+                type="button"
+                [color]="'primary'">Save
+            </button>
+        </div>
+    </form>
+</div>

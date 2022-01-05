@@ -11,7 +11,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { FuseAlertModule } from '@fuse/components/alert';
 import { SharedModule } from 'app/shared/shared.module';
 import { SettingsComponent } from 'app/modules/admin/apps/settings/settings.component';
-import { SettingsAccountComponent } from 'app/modules/admin/apps/settings/account/account.component';
+import { SettingsInformationComponent } from 'app/modules/admin/apps/settings/information/information.component';
 import { SettingsSecurityComponent } from 'app/modules/admin/apps/settings/security/security.component';
 import { SettingsPlanBillingComponent } from 'app/modules/admin/apps/settings/plan-billing/plan-billing.component';
 import { SettingsNotificationsComponent } from 'app/modules/admin/apps/settings/notifications/notifications.component';
@@ -21,7 +21,7 @@ import { settingsRoutes } from 'app/modules/admin/apps/settings/settings.routing
 @NgModule({
     declarations: [
         SettingsComponent,
-        SettingsAccountComponent,
+        SettingsInformationComponent,
         SettingsSecurityComponent,
         SettingsPlanBillingComponent,
         SettingsNotificationsComponent,

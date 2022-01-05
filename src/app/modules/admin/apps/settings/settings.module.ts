@@ -17,6 +17,7 @@ import { SettingsPlanBillingComponent } from 'app/modules/admin/apps/settings/pl
 import { SettingsNotificationsComponent } from 'app/modules/admin/apps/settings/notifications/notifications.component';
 import { SettingsTeamComponent } from 'app/modules/admin/apps/settings/team/team.component';
 import { settingsRoutes } from 'app/modules/admin/apps/settings/settings.routing';
+import {SettingsKeysComponent} from "./keys/keys.component";
 
 @NgModule({
     declarations: [
@@ -25,7 +26,8 @@ import { settingsRoutes } from 'app/modules/admin/apps/settings/settings.routing
         SettingsSecurityComponent,
         SettingsPlanBillingComponent,
         SettingsNotificationsComponent,
-        SettingsTeamComponent
+        SettingsTeamComponent,
+        SettingsKeysComponent
     ],
     imports     : [
         RouterModule.forChild(settingsRoutes),

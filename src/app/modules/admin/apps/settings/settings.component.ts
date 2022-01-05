@@ -52,6 +52,12 @@ export class SettingsComponent implements OnInit, OnDestroy
                 description: 'Manage your password and 2-step verification preferences'
             },
             {
+                id         : 'keys',
+                icon       : 'heroicons_outline:key',
+                title      : 'Keys',
+                description: 'Manage your client application authentication keys here'
+            },
+            {
                 id         : 'plan-billing',
                 icon       : 'heroicons_outline:credit-card',
                 title      : 'Plan & Billing',

@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
-    selector       : 'settings-security',
-    templateUrl    : './security.component.html',
+    selector       : 'settings-keys',
+    templateUrl    : './keys.component.html',
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingsSecurityComponent implements OnInit
+export class SettingsKeysComponent implements OnInit
 {
-    securityForm: FormGroup;
+    keysForm: FormGroup;
 
     /**
      * Constructor
@@ -30,7 +30,7 @@ export class SettingsSecurityComponent implements OnInit
     ngOnInit(): void
     {
         // Create the form
-        this.securityForm = this._formBuilder.group({
+        this.keysForm = this._formBuilder.group({
             currentPassword  : [''],
             newPassword      : ['']
         });

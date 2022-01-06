@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
-    selector       : 'settings-keys',
-    templateUrl    : './keys.component.html',
+    selector       : 'settings-apikeys',
+    templateUrl    : './apikeys.component.html',
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

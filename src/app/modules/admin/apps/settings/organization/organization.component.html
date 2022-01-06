@@ -1,7 +1,7 @@
 <div class="w-full max-w-3xl">
 
     <!-- Form -->
-    <form [formGroup]="informationForm">
+    <form [formGroup]="organizationForm">
 
         <!-- Company Section -->
         <div class="w-full">
@@ -17,7 +17,7 @@
                         [svgIcon]="'heroicons_solid:office-building'"
                         matPrefix></mat-icon>
                     <input
-                        [formControlName]="'companyName'"
+                        [formControlName]="'name'"
                         matInput>
                 </mat-form-field>
             </div>
@@ -31,7 +31,7 @@
                         [svgIcon]="'heroicons_solid:link'"
                         matPrefix></mat-icon>
                     <input
-                        [formControlName]="'companyWebsite'"
+                        [formControlName]="'website'"
                         matInput>
                 </mat-form-field>
             </div>
@@ -55,7 +55,7 @@
                         [svgIcon]="'heroicons_solid:mail'"
                         matPrefix></mat-icon>
                     <input
-                        [formControlName]="'companyContactEmail'"
+                        [formControlName]="'email'"
                         matInput>
                 </mat-form-field>
             </div>
@@ -69,7 +69,7 @@
                         [svgIcon]="'heroicons_solid:phone'"
                         matPrefix></mat-icon>
                     <input
-                        [formControlName]="'companyContactPhone'"
+                        [formControlName]="'phone'"
                         matInput>
                 </mat-form-field>
             </div>
@@ -93,7 +93,7 @@
                         [svgIcon]="'heroicons_solid:location-marker'"
                         matPrefix></mat-icon>
                     <input
-                        [formControlName]="'companyStreetAddressOne'"
+                        [formControlName]="'addressOne'"
                         matInput>
                 </mat-form-field>
             </div>
@@ -107,7 +107,7 @@
                         [svgIcon]="'heroicons_solid:location-marker'"
                         matPrefix></mat-icon>
                     <input
-                        [formControlName]="'companyStreetAddressTwo'"
+                        [formControlName]="'addressTwo'"
                         matInput>
                 </mat-form-field>
             </div>
@@ -121,7 +121,7 @@
                         [svgIcon]="'heroicons_solid:location-marker'"
                         matPrefix></mat-icon>
                     <input
-                        [formControlName]="'companyCity'"
+                        [formControlName]="'city'"
                         matInput>
                 </mat-form-field>
             </div>
@@ -135,7 +135,7 @@
                         [svgIcon]="'heroicons_solid:location-marker'"
                         matPrefix></mat-icon>
                     <input
-                        [formControlName]="'companyState'"
+                        [formControlName]="'state'"
                         matInput>
                 </mat-form-field>
             </div>
@@ -148,7 +148,7 @@
                         class="icon-size-5"
                         [svgIcon]="'heroicons_solid:location-marker'"
                         matPrefix></mat-icon>
-                    <mat-select [formControlName]="'companyCountry'">
+                    <mat-select [formControlName]="'country'">
                         <mat-option [value]="'usa'">United States</mat-option>
                         <mat-option [value]="'canada'">Canada</mat-option>
                         <mat-option [value]="'mexico'">Mexico</mat-option>

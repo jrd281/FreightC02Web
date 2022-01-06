@@ -11,18 +11,18 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { FuseAlertModule } from '@fuse/components/alert';
 import { SharedModule } from 'app/shared/shared.module';
 import { SettingsComponent } from 'app/modules/admin/apps/settings/settings.component';
-import { SettingsInformationComponent } from 'app/modules/admin/apps/settings/information/information.component';
+import { SettingsOrganizationComponent } from 'app/modules/admin/apps/settings/organization/organization.component';
 import { SettingsSecurityComponent } from 'app/modules/admin/apps/settings/security/security.component';
 import { SettingsPlanBillingComponent } from 'app/modules/admin/apps/settings/plan-billing/plan-billing.component';
 import { SettingsNotificationsComponent } from 'app/modules/admin/apps/settings/notifications/notifications.component';
 import { SettingsTeamComponent } from 'app/modules/admin/apps/settings/team/team.component';
 import { settingsRoutes } from 'app/modules/admin/apps/settings/settings.routing';
-import {SettingsKeysComponent} from "./keys/keys.component";
+import {SettingsKeysComponent} from "./apikeys/apikeys.component";
 
 @NgModule({
     declarations: [
         SettingsComponent,
-        SettingsInformationComponent,
+        SettingsOrganizationComponent,
         SettingsSecurityComponent,
         SettingsPlanBillingComponent,
         SettingsNotificationsComponent,

@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-    selector       : 'settings-information',
-    templateUrl    : './information.component.html',
+    selector       : 'settings-organization',
+    templateUrl    : './organization.component.html',
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingsInformationComponent implements OnInit
+export class SettingsOrganizationComponent implements OnInit
 {
-    informationForm: FormGroup;
+    organizationForm: FormGroup;
 
     /**
      * Constructor
@@ -30,16 +30,16 @@ export class SettingsInformationComponent implements OnInit
     ngOnInit(): void
     {
         // Create the form
-        this.informationForm = this._formBuilder.group({
-            companyName    : ['Alphabet'],
-            companyWebsite   : ['www.google.com'],
-            companyContactEmail: ['hughes.brian@mail.com', Validators.email],
-            companyContactPhone: ['121-490-33-12'],
-            companyStreetAddressOne: ['100 Main St'],
-            companyStreetAddressTwo: ['Apt. 35B'],
-            companyCity: ['Spartanburg'],
-            companyState: ['SC'],
-            companyCountry: ['usa'],
+        this.organizationForm = this._formBuilder.group({
+            name    : ['Alphabet'],
+            website   : ['www.google.com'],
+            email: ['hughes.brian@mail.com', Validators.email],
+            phone: ['121-490-33-12'],
+            addressOne: ['100 Main St'],
+            addressTwo: ['Apt. 35B'],
+            city: ['Spartanburg'],
+            state: ['SC'],
+            country: ['usa'],
         });
     }
 }

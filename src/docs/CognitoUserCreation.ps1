@@ -8,5 +8,5 @@ $userAttributes = @(
     @{Name="custom:tenant_id"; Value="dev"}
 )
 
-$user = New-CGIPUserAdmin -UserPoolId $userPoolId -DesiredDeliveryMedium $desiredDeliveryMediums -Username $username -TemporaryPassword -UserAttribute $userAttributes
+$user = New-CGIPUserAdmin -UserPoolId $userPoolId -DesiredDeliveryMedium $desiredDeliveryMediums -Username $username -TemporaryPassword $temporaryPassword -UserAttribute $userAttributes
 Set-CGIPUserPasswordAdmin -Username $username -UserPoolId $userPoolId -Password $permanentPassword -Permanent $true

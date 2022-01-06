@@ -77,7 +77,7 @@
                     <ng-container [ngSwitch]="selectedPanel">
                         <!-- Account -->
                         <ng-container *ngSwitchCase="'information'">
-                            <settings-information></settings-information>
+                            <settings-organization></settings-organization>
                         </ng-container>
                         <!-- Security -->
                         <ng-container *ngSwitchCase="'security'">
@@ -85,7 +85,7 @@
                         </ng-container>
                         <!-- Keys -->
                         <ng-container *ngSwitchCase="'keys'">
-                            <settings-keys></settings-keys>
+                            <settings-apikeys></settings-apikeys>
                         </ng-container>
                         <!-- Plan & Billing -->
                         <ng-container *ngSwitchCase="'plan-billing'">

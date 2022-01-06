@@ -94,7 +94,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Settings',
                 type : 'basic',
                 icon : 'heroicons_outline:cog',
-                link : '/pages/settings'
+                link : '/settings'
             }
         ]
     }

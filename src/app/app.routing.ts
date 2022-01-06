@@ -86,7 +86,7 @@ export const appRoutes: Route[] = [
             {path: 'apps', children: [
                 {path: 'users', loadChildren: () => import('app/modules/admin/apps/users/users.module').then(m => m.UsersModule)},
             ]},
-
+            {path: 'settings', loadChildren: () => import('app/modules/admin/apps/settings/settings.module').then(m => m.SettingsModule)},
             // Pages
             {path: 'pages', children: [
                 // Error
@@ -99,7 +99,6 @@ export const appRoutes: Route[] = [
                 {path: 'profile', loadChildren: () => import('app/modules/admin/pages/profile/profile.module').then(m => m.ProfileModule)},
 
                 // Settings
-                {path: 'settings', loadChildren: () => import('app/modules/admin/apps/settings/settings.module').then(m => m.SettingsModule)},
             ]},
 
             // 404 & Catch all

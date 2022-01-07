@@ -3,7 +3,7 @@ import { SettingsComponent } from 'app/modules/admin/apps/settings/settings.comp
 import {UsersResolver, UsersUserResolver} from '../users/users.resolvers';
 import {SettingsOrganizationComponent} from './organization/organization.component';
 import {SettingsKeysComponent} from './apikeys/apikeys.component';
-import {SettingsApiKeysResolver, SettingsOrganizationResolver} from "./settings.resolvers";
+import {SettingsApiKeysResolver, SettingsOrganizationResolver} from './settings.resolvers';
 
 export const settingsRoutes: Route[] = [
     {
@@ -21,7 +21,6 @@ export const settingsRoutes: Route[] = [
         ],
         resolve  : {
             organization    : SettingsOrganizationResolver,
-            apikeys    : SettingsApiKeysResolver,
         }
     }
 ];

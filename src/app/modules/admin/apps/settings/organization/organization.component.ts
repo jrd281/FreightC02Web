@@ -15,6 +15,7 @@ import {SettingsOrganization} from '../settings.types';
 import {Store} from '@ngrx/store';
 import {AuthAppState} from '../../../../../core/auth/store/reducers';
 import {getIsAdminUser} from '../../../../../core/auth/store/selectors/auth.selectors';
+import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
 
 @Component({
     selector       : 'settings-organization',
@@ -38,6 +39,7 @@ export class SettingsOrganizationComponent implements OnInit, OnDestroy
         private _store: Store<AuthAppState>,
         private _settingsService: SettingsService,
         private _formBuilder: FormBuilder,
+        private _fuseConfirmationService: FuseConfirmationService,
         private _changeDetectorRef: ChangeDetectorRef
     )
     {
@@ -117,6 +119,29 @@ export class SettingsOrganizationComponent implements OnInit, OnDestroy
     }
 
     saveInformation(): void {
+        // Get the user object
+        const updatedSettingsOrg = this.organizationForm.getRawValue();
 
+        this._settingsService.saveSettingsOrganization(updatedSettingsOrg).subscribe((newUser) => {
+            this.toggleEditMode(false);
+        },(error) => {
+            const errorConfirmation = this._fuseConfirmationService.open({
+                title  : 'Error',
+                message: error,
+                icon: {
+                    show: true,
+                    name: 'heroicons_outline:exclamation',
+                    color: 'error'
+                },
+                actions: {
+                    confirm: {
+                        label: 'OK'
+                    },
+                    cancel: {
+                        show: false
+                    }
+                }
+            });
+        });
     }
 }

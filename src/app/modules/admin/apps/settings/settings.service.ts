@@ -65,6 +65,28 @@ export class SettingsService
     }
 
     /**
+     * Get settings organization
+     */
+    saveSettingsOrganization(update: SettingsOrganization): Observable<any>
+    {
+        const endpoint = this._backendUrl + '/settings/organization';
+        return this._httpClient.patch<any>(endpoint, update).pipe(
+            tap((response: any[]) => {
+                const settings = response[0] !== undefined ? response[0] : {};
+                this._settingsOrganization.next(settings);
+            }),
+            catchError((httpResponse: HttpResponse<any>) => {
+                const errorMessage = this.getErrorMessage(httpResponse);
+                // Log the error
+                console.error(errorMessage);
+
+                // Throw an error
+                return throwError(errorMessage);
+            }),
+        );
+    }
+
+    /**
      * Get settings api keys
      */
     getSettingsApiKeys(): Observable<any>

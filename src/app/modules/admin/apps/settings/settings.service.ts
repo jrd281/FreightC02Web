@@ -108,6 +108,28 @@ export class SettingsService
         );
     }
 
+    /**
+     * Re-issue api keys
+     */
+    createSettingsApiKeys(): Observable<any>
+    {
+        const endpoint = this._backendUrl + '/settings/apikeys/reissue';
+        return this._httpClient.post<any>(endpoint,{}).pipe(
+            tap((response: any[]) => {
+                const settings = response[0] !== undefined ? response[0] : {};
+                this._settingsApiKeys.next(settings);
+            }),
+            catchError((httpResponse: HttpResponse<any>) => {
+                const errorMessage = this.getErrorMessage(httpResponse);
+                // Log the error
+                console.error(errorMessage);
+
+                // Throw an error
+                return throwError(errorMessage);
+            }),
+        );
+    }
+
     getErrorMessage(httpResponse: HttpResponse<any>): string {
         let errorMessage = httpResponse['error'] ??  httpResponse['message'] ?? '';
 

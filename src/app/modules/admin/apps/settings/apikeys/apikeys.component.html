@@ -8,34 +8,17 @@
             <div class="text-xl">Retrieve and Reset your Client App Keys</div>
         </div>
         <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
-            <!-- Current password -->
-            <div class="sm:col-span-4">
-                <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <mat-label>Current password</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:key'"
-                        matPrefix></mat-icon>
-                    <input
-                        [formControlName]="'currentPassword'"
-                        type="password"
-                        matInput>
-                </mat-form-field>
+            <!-- Current key id -->
+            <div class="flex flex-row sm:items-center sm:col-span-4">
+                <mat-icon [svgIcon]="'heroicons_solid:key'"></mat-icon>
+                <mat-label>Access Id:</mat-label>
+                <div class="ml-6 leading-6">{{settingsAPIKeys.accessKeyId}}</div>
             </div>
-            <!-- New password -->
-            <div class="sm:col-span-4">
-                <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <mat-label>New password</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:key'"
-                        matPrefix></mat-icon>
-                    <input
-                        [formControlName]="'newPassword'"
-                        type="password"
-                        matInput>
-                </mat-form-field>
-                <div class="mt-1 text-md text-hint">Minimum 8 characters. Must include numbers, letters and special characters.</div>
+            <!-- Current secret key -->
+            <div class="flex flex-row sm:items-center sm:col-span-4">
+                <mat-icon [svgIcon]="'heroicons_solid:key'"></mat-icon>
+                <mat-label>Access Key:</mat-label>
+                <div class="ml-6 leading-6">{{settingsAPIKeys.secretAccessKey}}</div>
             </div>
         </div>
 
@@ -45,15 +28,11 @@
         <!-- Actions -->
         <div class="flex items-center justify-end">
             <button
-                mat-stroked-button
-                type="button">
-                Cancel
-            </button>
-            <button
                 class="ml-4"
                 mat-flat-button
                 type="button"
-                [color]="'primary'">Save
+                (click)="createNewKeys()"
+                [color]="'primary'">Get New Keyset
             </button>
         </div>
     </form>

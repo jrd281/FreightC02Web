@@ -81,7 +81,6 @@ export class SettingsOrganizationComponent implements OnInit, OnDestroy
             .subscribe((value) => {
                 this.canEdit = value;
             });
-
     }
 
     /**

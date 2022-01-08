@@ -21,6 +21,7 @@ export const settingsRoutes: Route[] = [
         ],
         resolve  : {
             organization    : SettingsOrganizationResolver,
+            apikeys    : SettingsApiKeysResolver
         }
     }
 ];

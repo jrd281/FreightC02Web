@@ -13,6 +13,7 @@ export interface SettingsOrganization
 
 export interface SettingsAPIKeys
 {
-    accessId: string;
-    accessKey: string;
+    name: string;
+    accessKeyId: string;
+    secretAccessKey: string;
 }

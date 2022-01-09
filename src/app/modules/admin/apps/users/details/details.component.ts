@@ -86,7 +86,7 @@ export class UsersDetailsComponent implements OnInit, OnDestroy
             avatar      : [null],
             firstName   : ['', [Validators.required]],
             lastName    : ['', [Validators.required]],
-            email       : ['', [Validators.required]],
+            email       : ['', [Validators.required, Validators.email]],
             active      : [true],
             profile     : ['USER', [Validators.required]]
         });

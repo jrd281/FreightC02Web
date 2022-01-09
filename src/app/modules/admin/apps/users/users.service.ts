@@ -54,9 +54,12 @@ export class UsersService
         return this._httpClient.get<User[]>(endpoint).pipe(
             tap((response: any[]) => {
                 const users = response[0] !== undefined ? response[0] : [];
-
+                // This is necessary because if a user doesn't have a
+                // property because of some reason, it might error out
+                // so we set all properties first
+                const defaultedUsers = users.map(value => Object.assign({},createDefaultUser(), value));
                 users.sort(this.userSortCompare);
-                this._users.next(users);
+                this._users.next(defaultedUsers);
             }),
             catchError((httpResponse: HttpResponse<any>) => {
                 const errorMessage = this.getErrorMessage(httpResponse);

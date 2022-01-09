@@ -113,20 +113,7 @@ export class SettingsPasswordComponent implements OnInit
     }
 
     cancel(): void {
-        this.passwordChangeForm.reset({
-            password: '',
-            confirmPassword: ''
-        });
-
-        Object.keys(this.passwordChangeForm.controls).forEach(
-            (field) => {
-                this.passwordChangeForm.get(field).setErrors(null);
-            }
-        );
-
-        this.passwordChangeForm.markAsPristine();
-        this.passwordChangeForm.markAsUntouched();
-        this.passwordChangeForm.updateValueAndValidity();
+        this.resetPasswordChangeForm();
     }
 
     private resetPasswordChangeForm(): void {

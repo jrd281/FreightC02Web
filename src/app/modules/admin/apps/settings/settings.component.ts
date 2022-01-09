@@ -56,24 +56,6 @@ export class SettingsComponent implements OnInit, OnDestroy
                 icon       : 'heroicons_outline:key',
                 title      : 'Keys',
                 description: 'Reset Your Client Application Authentication Keys Here'
-            },
-            {
-                id         : 'plan-billing',
-                icon       : 'heroicons_outline:credit-card',
-                title      : 'Plan & Billing',
-                description: 'Manage your subscription plan, payment method and billing information'
-            },
-            {
-                id         : 'notifications',
-                icon       : 'heroicons_outline:bell',
-                title      : 'Notifications',
-                description: 'Manage when you\'ll be notified on which channels'
-            },
-            {
-                id         : 'team',
-                icon       : 'heroicons_outline:user-group',
-                title      : 'Team',
-                description: 'Manage your existing team and change roles/permissions'
             }
         ];
 

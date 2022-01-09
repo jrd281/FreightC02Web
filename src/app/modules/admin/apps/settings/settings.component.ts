@@ -43,19 +43,19 @@ export class SettingsComponent implements OnInit, OnDestroy
                 id         : 'information',
                 icon       : 'heroicons_outline:office-building',
                 title      : 'Information',
-                description: 'Company Information'
+                description: 'Manage And View Your Company Information'
             },
             {
-                id         : 'security',
+                id         : 'password',
                 icon       : 'heroicons_outline:lock-closed',
                 title      : 'Security',
-                description: 'Manage your password and 2-step verification preferences'
+                description: 'Reset Your Password'
             },
             {
                 id         : 'keys',
                 icon       : 'heroicons_outline:key',
                 title      : 'Keys',
-                description: 'Manage your client application authentication keys here'
+                description: 'Reset Your Client Application Authentication Keys Here'
             },
             {
                 id         : 'plan-billing',

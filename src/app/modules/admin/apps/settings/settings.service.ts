@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
+import {BehaviorSubject, catchError, map, Observable, switchMap, take, tap, throwError} from 'rxjs';
 import {environment} from '../../../../../environments/environment';
 import {SettingsAPIKeys, SettingsOrganization} from './settings.types';
 
@@ -111,7 +111,7 @@ export class SettingsService
     /**
      * Re-issue api keys
      */
-    createSettingsApiKeys(): Observable<any>
+    reissueSettingsApiKeys(): Observable<any>
     {
         const endpoint = this._backendUrl + '/settings/apikeys/reissue';
         return this._httpClient.post<any>(endpoint,{}).pipe(
@@ -127,6 +127,24 @@ export class SettingsService
                 // Throw an error
                 return throwError(errorMessage);
             }),
+        );
+    }
+
+    /**
+     * Change Password
+     */
+    changePassword(password: string): Observable<any> {
+        const endpoint = this._backendUrl + '/settings/password';
+        return this._httpClient.post<any>(endpoint,{password}).pipe(
+            catchError((httpResponse: HttpResponse<any>) => {
+                const errorMessage = this.getErrorMessage(httpResponse);
+                // Log the error
+                console.error(errorMessage);
+
+                // Throw an error
+                return throwError(errorMessage);
+            }),
+            map((response: any) => true),
         );
     }
 

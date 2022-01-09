@@ -14,8 +14,8 @@ import {UsersService} from '../users.service';
 import {User} from '../users.types';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
-import {ConfirmPasswordValidator} from './password-change.validators';
 import {FuseConfirmationService} from '../../../../../../@fuse/services/confirmation';
+import {ConfirmPasswordValidator} from '../../../../../shared/validators/password-change.validators';
 
 @Component({
   selector: 'password-change',
@@ -55,13 +55,13 @@ export class PasswordChangeComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void
     {
-        // Prepare the card form
+        // Prepare the form
         this.passwordChangeForm = this._formBuilder.group({
             password        : ['', Validators.required],
             confirmPassword : ['', Validators.required]
         },
-            {
-            validator: ConfirmPasswordValidator('password', 'confirmPassword')
+{
+            validators: ConfirmPasswordValidator('password', 'confirmPassword')
         });
     }
 

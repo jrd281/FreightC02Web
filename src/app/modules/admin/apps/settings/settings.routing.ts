@@ -9,16 +9,6 @@ export const settingsRoutes: Route[] = [
     {
         path     : '',
         component: SettingsComponent,
-        children : [
-            {
-                path     : 'organization',
-                component: SettingsOrganizationComponent,
-            },
-            {
-                path     : 'apikeys',
-                component: SettingsKeysComponent
-            }
-        ],
         resolve  : {
             organization    : SettingsOrganizationResolver,
             apikeys    : SettingsApiKeysResolver

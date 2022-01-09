@@ -92,7 +92,7 @@ export class SettingsKeysComponent implements OnInit, OnDestroy
             if ( result === 'confirmed' )
             {
                 this._settingsService
-                    .createSettingsApiKeys()
+                    .reissueSettingsApiKeys()
                     .subscribe();
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

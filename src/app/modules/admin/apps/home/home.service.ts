@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, catchError, map, Observable, tap, throwError} from 'rxjs';
 import {environment} from '../../../../../environments/environment';
+import {Info} from "./info.types";
 
 @Injectable({
     providedIn: 'root'
@@ -9,7 +10,7 @@ import {environment} from '../../../../../environments/environment';
 export class HomeService
 {
     private _backendUrl: string =  environment.resourceServerUrl;
-    private _data: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _info: BehaviorSubject<Info> = new BehaviorSubject(null);
 
     /**
      * Constructor
@@ -25,9 +26,9 @@ export class HomeService
     /**
      * Getter for data
      */
-    get data$(): Observable<any>
+    get info(): Observable<any>
     {
-        return this._data.asObservable();
+        return this._info.asObservable();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -35,15 +36,15 @@ export class HomeService
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Get data
+     * Get info
      */
-    getData(): Observable<any>
+    getInfo(): Observable<any>
     {
         const endpoint = this._backendUrl + '/info';
         return this._httpClient.get<any>(endpoint).pipe(
             tap((response: any[]) => {
-                const settings = response[0] !== undefined ? response[0] : {};
-                this._settingsApiKeys.next(settings);
+                const info = response[0] !== undefined ? response[0] : {};
+                this._info.next(info);
             }),
             catchError((httpResponse: HttpResponse<any>) => {
                 const errorMessage = this.getErrorMessage(httpResponse);

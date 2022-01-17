@@ -1,13 +1,17 @@
 export interface Info
 {
-    name: string;
-    accessKeyId: string;
-    secretAccessKey: string;
+    etlstats: IngestionSummary[];
 }
 
 export interface IngestionSummary
 {
-    name: string;
-    accessKeyId: string;
-    secretAccessKey: string;
+    sourceProductName: string;
+    sourceName: string;
+    sourceVersion: string;
+    sourceInfoArea: string;
+    processTime: number;
+    rowcount: number;
+    new: number;
+    updated: number;
+    deleted: number;
 }

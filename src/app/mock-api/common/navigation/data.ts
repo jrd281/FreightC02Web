@@ -10,6 +10,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon    : 'heroicons_outline:home',
         children: [
             {
+                id   : 'dashboards.home',
+                title: 'Home',
+                type : 'basic',
+                icon : 'heroicons_outline:home',
+                link : '/apps/home'
+            },
+            {
                 id   : 'dashboards.project',
                 title: 'Project',
                 type : 'basic',

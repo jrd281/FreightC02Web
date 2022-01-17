@@ -3,6 +3,7 @@ import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
+import {HomeModule} from "./modules/admin/apps/home/home.module";
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -60,7 +61,7 @@ export const appRoutes: Route[] = [
             layout: 'empty'
         },
         children   : [
-            {path: 'home', loadChildren: () => import('app/modules/landing/home/home.module').then(m => m.LandingHomeModule)},
+            {path: 'home', loadChildren: () => import('app/modules/admin/apps/home/home.module').then(m => m.HomeModule)},
         ]
     },
 
@@ -84,7 +85,8 @@ export const appRoutes: Route[] = [
 
             // Apps
             {path: 'apps', children: [
-                {path: 'users', loadChildren: () => import('app/modules/admin/apps/users/users.module').then(m => m.UsersModule)},
+                    {path: 'home', loadChildren: () => import('app/modules/admin/apps/home/home.module').then(m => m.HomeModule)},
+                    {path: 'users', loadChildren: () => import('app/modules/admin/apps/users/users.module').then(m => m.UsersModule)},
             ]},
             {path: 'settings', loadChildren: () => import('app/modules/admin/apps/settings/settings.module').then(m => m.SettingsModule)},
             // Pages

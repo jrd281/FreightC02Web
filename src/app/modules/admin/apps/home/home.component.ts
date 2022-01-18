@@ -6,8 +6,8 @@ import { ProjectService } from 'app/modules/admin/dashboards/project/project.ser
 import {HomeService} from './home.service';
 import {SettingsService} from '../settings/settings.service';
 import {SettingsOrganization} from '../settings/settings.types';
-import {Info} from "./info.types";
-import {getLoggedInState} from "../../../../core/auth/store/selectors/auth.selectors";
+import {Info} from './info.types';
+import {DatePipe} from '@angular/common';
 
 @Component({
     selector       : 'home',
@@ -24,16 +24,18 @@ export class HomeComponent implements OnInit, OnDestroy
     chartMonthlyExpenses: ApexOptions = {};
     chartYearlyExpenses: ApexOptions = {};
     data: any;
-    selectedProject: string = 'ACME Corp. Backend App';
     organizationName: string = '';
     settingsOrganization: SettingsOrganization;
-    rowCount: string ='-';
+    rowIngestionCount: string ='-';
+    newRowIngestionCount: string ='-';
     info: Info;
     timeWindowOptions = [
         {label: 'Today', value: 1},
         {label: 'Past 7 Days', value: 7},
         {label: 'Past 30 Days', value: 30}
     ];
+    lastProcessDate: string;
+    numberOfTmses: string;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     /**
      * Constructor
@@ -73,6 +75,38 @@ export class HomeComponent implements OnInit, OnDestroy
 
                 // Store the data
                 this.info = data;
+
+                const processTimes = this.info.etlstats
+                    .filter(value => value.processTime !== undefined)
+                    .map(value => value.processTime);
+
+                if ( processTimes.length > 0 ) {
+                    const lastProcessTime = Math.max(...processTimes);
+                    // eslint-disable-next-line max-len
+                    this.lastProcessDate = (new Date(lastProcessTime)).toLocaleTimeString([], {
+                        year: 'numeric',
+                        month: 'numeric',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } else {
+                    this.lastProcessDate = 'No TMS Data Yet';
+                }
+
+                const tmses = this.info.etlstats
+                    .filter(value => value.sourceName !== undefined)
+                    .map(value => value.sourceName);
+                const tmsCount = [...new Set(tmses)];
+
+                if ( tmsCount.length === 0 ) {
+                    this.numberOfTmses = 'No TMS Data Yet';
+                } else {
+                    this.numberOfTmses = (tmsCount.length).toString();
+                }
+
+                this.handleNewRowIngestionChange(1);
+                this.handleRowIngestionChange(1);
             });
         // Attach SVG fill fixer to all ApexCharts
         window['Apex'] = {
@@ -103,19 +137,27 @@ export class HomeComponent implements OnInit, OnDestroy
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    public handleRowsChange(value: any): void {
+    public handleRowIngestionChange(value: any): void {
         if ( value !== undefined && this.info !== undefined ) {
             const milliLowerBound = (new Date()).getTime() - (value * 86400000);
-                this.rowCount = String(this.info.etlstats.filter((etlStat) => {
-                    const test = etlStat.processTime;
-                    const milliLowerBound2 = etlStat.processTime;
+                this.rowIngestionCount = String(this.info.etlstats.filter((etlStat) => {
                     return etlStat.processTime !== undefined && (etlStat.processTime > milliLowerBound);
                 }).reduce((previousValue, currentValue) => previousValue + currentValue.rowcount, 0));
         } else {
-            this.rowCount = '-';
+            this.rowIngestionCount = '-';
         }
     }
 
+    public handleNewRowIngestionChange(value: any): void {
+        if ( value !== undefined && this.info !== undefined ) {
+            const milliLowerBound = (new Date()).getTime() - (value * 86400000);
+            this.newRowIngestionCount = String(this.info.etlstats.filter((etlStat) => {
+                return etlStat.processTime !== undefined && (etlStat.processTime > milliLowerBound);
+            }).reduce((previousValue, currentValue) => previousValue + currentValue.new, 0));
+        } else {
+            this.newRowIngestionCount = '-';
+        }
+    }
     /**
      * Track by function for ngFor loops
      *

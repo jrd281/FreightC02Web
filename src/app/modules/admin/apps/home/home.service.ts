@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, catchError, map, Observable, tap, throwError} from 'rxjs';
 import {environment} from '../../../../../environments/environment';
-import {Info} from "./info.types";
+import {createDefaultInfo, Info} from './info.types';
 
 @Injectable({
     providedIn: 'root'
@@ -43,7 +43,7 @@ export class HomeService
         const endpoint = this._backendUrl + '/info';
         return this._httpClient.get<any>(endpoint).pipe(
             tap((response: any[]) => {
-                const info = response[0] !== undefined ? response[0] : {};
+                const info = response[0] !== undefined ? Object.assign({},createDefaultInfo(), response[0])  : createDefaultInfo();
                 this._info.next(info);
             }),
             catchError((httpResponse: HttpResponse<any>) => {

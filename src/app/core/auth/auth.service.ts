@@ -25,7 +25,6 @@ export class AuthService
     {
 
         Hub.listen('auth', (data) => {
-            const c = 100;
             switch (data.payload.event) {
                 case 'signIn':
                     console.log('user signed in');

@@ -6,6 +6,7 @@ export type Layout =
     | 'material'
     | 'modern'
     // Vertical
+    | 'custom'
     | 'classic'
     | 'classy'
     | 'compact'

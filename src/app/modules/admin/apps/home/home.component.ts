@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulatio
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ApexOptions } from 'ng-apexcharts';
-import { ProjectService } from 'app/modules/admin/dashboards/project/project.service';
 import {HomeService} from './home.service';
 import {SettingsService} from '../settings/settings.service';
 import {SettingsOrganization} from '../settings/settings.types';
@@ -17,12 +16,6 @@ import {DatePipe} from '@angular/common';
 })
 export class HomeComponent implements OnInit, OnDestroy
 {
-    chartGithubIssues: ApexOptions = {};
-    chartTaskDistribution: ApexOptions = {};
-    chartBudgetDistribution: ApexOptions = {};
-    chartWeeklyExpenses: ApexOptions = {};
-    chartMonthlyExpenses: ApexOptions = {};
-    chartYearlyExpenses: ApexOptions = {};
     data: any;
     organizationName: string = '';
     settingsOrganization: SettingsOrganization;
@@ -41,7 +34,6 @@ export class HomeComponent implements OnInit, OnDestroy
      * Constructor
      */
     constructor(
-        private _projectService: ProjectService,
         private _homeService: HomeService,
         private _settingsService: SettingsService,
         private _router: Router
@@ -140,9 +132,10 @@ export class HomeComponent implements OnInit, OnDestroy
     public handleRowIngestionChange(value: any): void {
         if ( value !== undefined && this.info !== undefined ) {
             const milliLowerBound = (new Date()).getTime() - (value * 86400000);
-                this.rowIngestionCount = String(this.info.etlstats.filter((etlStat) => {
-                    return etlStat.processTime !== undefined && (etlStat.processTime > milliLowerBound);
-                }).reduce((previousValue, currentValue) => previousValue + currentValue.rowcount, 0));
+                this.rowIngestionCount = String(this.info.etlstats
+                    .filter(etlStat => etlStat.processTime !== undefined && (etlStat.processTime > milliLowerBound))
+                    .reduce((previousValue, currentValue) => previousValue + currentValue.rowcount, 0)
+                );
         } else {
             this.rowIngestionCount = '-';
         }
@@ -151,9 +144,10 @@ export class HomeComponent implements OnInit, OnDestroy
     public handleNewRowIngestionChange(value: any): void {
         if ( value !== undefined && this.info !== undefined ) {
             const milliLowerBound = (new Date()).getTime() - (value * 86400000);
-            this.newRowIngestionCount = String(this.info.etlstats.filter((etlStat) => {
-                return etlStat.processTime !== undefined && (etlStat.processTime > milliLowerBound);
-            }).reduce((previousValue, currentValue) => previousValue + currentValue.new, 0));
+            this.newRowIngestionCount = String(this.info.etlstats
+                .filter(etlStat => etlStat.processTime !== undefined && (etlStat.processTime > milliLowerBound))
+                .reduce((previousValue, currentValue) => previousValue + currentValue.new, 0)
+            );
         } else {
             this.newRowIngestionCount = '-';
         }

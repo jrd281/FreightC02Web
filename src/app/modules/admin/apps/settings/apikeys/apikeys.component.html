@@ -1,7 +1,7 @@
 <div class="w-full max-w-3xl">
 
     <!-- Form -->
-    <form [formGroup]="keysForm">
+    <form>
 
         <!-- Section -->
         <div class="w-full">
@@ -12,13 +12,13 @@
             <div class="flex flex-row sm:items-center sm:col-span-4">
                 <mat-icon [svgIcon]="'heroicons_solid:key'"></mat-icon>
                 <mat-label>Access Id:</mat-label>
-                <div class="ml-6 leading-6">{{settingsAPIKeys.accessKeyId}}</div>
+                <div class="ml-6 leading-6">{{accessKeyId}}</div>
             </div>
             <!-- Current secret key -->
             <div class="flex flex-row sm:items-center sm:col-span-4">
                 <mat-icon [svgIcon]="'heroicons_solid:key'"></mat-icon>
                 <mat-label>Access Key:</mat-label>
-                <div class="ml-6 leading-6">{{settingsAPIKeys.secretAccessKey}}</div>
+                <div class="ml-6 leading-6">{{secretAccessKey}}</div>
             </div>
         </div>
 
@@ -26,7 +26,15 @@
         <div class="my-10 border-t"></div>
 
         <!-- Actions -->
-        <div class="flex items-center justify-end">
+        <div class="flex items-center justify-between">
+            <button
+                class="ml-4"
+                mat-flat-button
+                type="button"
+                (click)="showHideKeys()"
+                [color]="'primary'">{{showHideKeyText}}
+            </button>
+
             <button
                 class="ml-4"
                 mat-flat-button

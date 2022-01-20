@@ -24,6 +24,10 @@ export class SettingsKeysComponent implements OnInit, OnDestroy
 {
     keysForm: FormGroup;
     settingsAPIKeys: SettingsAPIKeys;
+    showHideKeyText: string = 'Show Keys';
+    isShowingKeys: boolean;
+    accessKeyId: string = '';
+    secretAccessKey: string = '';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -59,7 +63,7 @@ export class SettingsKeysComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((settingsAPIKeys: SettingsAPIKeys) => {
                 this.settingsAPIKeys = settingsAPIKeys;
-
+                this.setKeyTexts();
                 this.keysForm.patchValue(this.settingsAPIKeys);
         });
     }
@@ -99,5 +103,30 @@ export class SettingsKeysComponent implements OnInit, OnDestroy
             }
         });
 
+    }
+
+    showHideKeys(): void {
+        this.isShowingKeys = !this.isShowingKeys;
+
+        if ( this.isShowingKeys === true ) {
+            this.showHideKeyText = 'Hide Keys';
+        } else {
+            this.showHideKeyText = 'Show Keys';
+        }
+
+        this.setKeyTexts();
+    }
+
+    setKeyTexts(): void {
+        if ( this.isShowingKeys === true ) {
+            this.accessKeyId = this.settingsAPIKeys.accessKeyId;
+            this.secretAccessKey = this.settingsAPIKeys.secretAccessKey;
+        } else {
+            let textLength = ((this.settingsAPIKeys ?? {accessKeyId: ''}).accessKeyId ?? '').length;
+            this.accessKeyId = '*'.repeat(textLength);
+
+            textLength = ((this.settingsAPIKeys ?? {secretAccessKey: ''}).secretAccessKey ?? '').length;
+            this.secretAccessKey = '*'.repeat(textLength);
+        }
     }
 }
